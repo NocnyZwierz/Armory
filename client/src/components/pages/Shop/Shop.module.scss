@@ -1,0 +1,15 @@
+.main {
+  display: inline-block;
+  padding: 30px;
+  background-color: pink;
+
+  .catDiv {
+    background-color: green;
+    padding: 30px;
+    text-align: center;
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
