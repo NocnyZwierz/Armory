@@ -40,7 +40,7 @@ const Shop = () => {
   };
 
   return (
-    <Container>
+    <div>
       <h1>Sklep</h1>
       <Row>
         <Col>
@@ -72,7 +72,7 @@ const Shop = () => {
           )}
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 

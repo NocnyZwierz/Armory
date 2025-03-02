@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 const NavbarMain = () => {
   const navigate = useNavigate();
   return (
-    <Container className={style.main}>
+    <div className={style.main}>
       <input />
       <Row>
         <Col>
@@ -32,23 +32,35 @@ const NavbarMain = () => {
             <Col>
               <div>0</div>
             </Col>
+            <Navbar collapseOnSelect expand="lg">
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="mr-auto">
+                  <Nav.Link as={Link} to="/about">
+                    O mnie
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/shop">
+                    Sklep
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/gallery">
+                    Galeria
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/terms">
+                    Regulamin
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/contact">
+                    Kontakt
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/measurements">
+                    Pomiary
+                  </Nav.Link>
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
           </Row>
         </Col>
       </Row>
-      <Navbar collapseOnSelect expand="lg">
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
-            <Nav.Link as={Link} to="/about">O mnie</Nav.Link>
-            <Nav.Link as={Link} to="/shop">Sklep</Nav.Link>
-            <Nav.Link as={Link} to="/gallery">Galeria</Nav.Link>
-            <Nav.Link as={Link} to="/terms">Regulamin</Nav.Link>
-            <Nav.Link as={Link} to="/contact">Kontakt</Nav.Link>
-            <Nav.Link as={Link} to="/measurements">Pomiary</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    </Container>
+    </div>
   );
 };
 

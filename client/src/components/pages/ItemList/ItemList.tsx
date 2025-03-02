@@ -13,7 +13,6 @@ function ItemList(props: { title: string; id: number }) {
   }, [dispatch]);
 
   const filteredItems = items.filter((item) => item.category === props.title);
-  console.log(filteredItems, "<-------------------")
   return (
     <div>
       <h1>{props.title}</h1>
