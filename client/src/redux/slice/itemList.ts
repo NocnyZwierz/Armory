@@ -10,6 +10,7 @@ interface Item {
     new: boolean,
     featured: boolean,
     img: string,
+    description: string,
 }
 
 const initialState: Array<Item> = [];

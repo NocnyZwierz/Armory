@@ -1,6 +1,6 @@
 import React from "react";
 import style from "./Navbar.module.scss";
-import { Col, Container, Row, Nav, Navbar } from "react-bootstrap";
+import { Col, Row, Nav, Navbar } from "react-bootstrap";
 import { BiCart } from "react-icons/bi";
 import img from "../../../assets/main.jpg";
 import { Link, useNavigate } from "react-router-dom";

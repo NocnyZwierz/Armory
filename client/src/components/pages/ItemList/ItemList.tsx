@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getItems } from "../../../redux/slice/itemList";
 import style from "./ItemList.module.scss"
+import { Link } from "react-router-dom";
 
 function ItemList(props: { title: string; id: number }) {
   const dispatch = useDispatch();
@@ -21,6 +22,12 @@ function ItemList(props: { title: string; id: number }) {
           <h2>{item.title}</h2>
           <p>Cena: {item.price}</p>
           <img src={item.img} alt={item.title} />
+            <div>
+            <Link to={`/item/${item.id}`}>
+            Zobacz szczegóły
+          </Link>
+              <button >Dodaj do koszyka</button>
+            </div>
         </div>
       ))}
     </div>

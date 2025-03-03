@@ -13,6 +13,7 @@ import Terms from "./components/pages/Terms/Terms";
 import Contact from "./components/pages/Contact/Contact";
 import Measurements from "./components/pages/Measurements/Measurements";
 import PrivacyPolicy from "./components/pages/PrivacyPolicy/PrivacyPolicy";
+import Item from "./components/pages/Item/Item";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About/>} />
           <Route path="/shop" element={<Shop/>} />
+          <Route path="/item/:id" element={<Item />} />
           <Route path="/gallery" element={<Gallery/>} />
           <Route path="/terms" element={<Terms/>} />
           <Route path="/contact" element={<Contact/>} />
