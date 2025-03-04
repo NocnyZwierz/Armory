@@ -31,6 +31,13 @@ const db = {
     { id: 19, title: "Rękawice wikinga", price: 300, category: "Rękawice", new: false, featured: true, img: img, description: "Mocne i trwałe rękawice dla prawdziwych wojowników." },
     { id: 20, title: "Rękawice gladiatora", price: 250, category: "Rękawice", new: false, featured: false, img: img, description: "Wytrzymałe rękawice inspirowane antycznym stylem." },
   ],
+  finishes: [
+    { id: 1, title: "Mirror Polish" },
+    { id: 2, title: "Satin Finish" },
+    { id: 3, title: "Blackened Steel" },
+    { id: 4, title: "Brushed Finish" },
+    { id: 5, title: "Rustic / Aged Finish" },
+  ],
 };
 
 export default db;

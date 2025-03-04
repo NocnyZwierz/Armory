@@ -1,29 +1,37 @@
 import React, { useEffect, useState } from "react";
 import img from "../../../assets/Tło.jpg";
-import img2 from "../../../assets/main.jpg";
+import komes from "../../../assets/Komes.jpg"
 import style from "./Home.module.scss";
-import { Col, Row } from "react-bootstrap";
+import { Button, Card, Carousel, Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getCategory } from "../../../redux/slice/categorySlice";
 import { RootState } from "../../../redux/store";
+import { getItems } from "../../../redux/slice/itemList";
 
 interface Category {
   id: number;
   title: string;
+  img: string;
 }
+
+const VISIBLE_ITEMS = 4;
 
 function Home() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const categories = useSelector((state: RootState) => state.category);
+  const items = useSelector((state: RootState) => state.item);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [newsCarouselIndex, setNewsCarouselIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getCategory());
+    dispatch(getItems());
   }, [dispatch]);
 
   useEffect(() => {
@@ -49,6 +57,23 @@ function Home() {
     setSelectedCategory(cat);
     navigate(`/shop?${newParams.toString()}`);
   };
+
+  const recommendedItems = items.filter((item) => item.featured === true);
+  const newItems = items.filter((item) => item.new === true);
+
+  const groupedItems = [];
+  for (let i = 0; i < recommendedItems.length; i += VISIBLE_ITEMS) {
+    groupedItems.push(recommendedItems.slice(i, i + VISIBLE_ITEMS));
+  }
+
+  const handleCarouselSelect = (selectedIndex: number) => {
+    setCarouselIndex(selectedIndex);
+  };
+
+  const handleNewsCarouselSelect = (selectedIndex: number) => {
+    setNewsCarouselIndex(selectedIndex);
+  };
+
   return (
     <div className={style.mainDiv}>
       <div className={style.banner}>
@@ -76,20 +101,79 @@ function Home() {
 
       <div>
         <div>tu jakis ładny łacznik cos ala wieniec -----------</div>
-        <h3>polecane produkty jako karuzela</h3>
-        {/* mapa polecanych produktów */}
         <div>
-          <img src={img2} alt="" />
+          <h3>Polecane produkty</h3>
+          <Carousel
+            activeIndex={carouselIndex}
+            onSelect={handleCarouselSelect}
+            indicators={true}
+            interval={5000}
+            className={style.carousel}
+          >
+            {groupedItems.map((group, id) => (
+              <Carousel.Item key={id}>
+                <Row className="justify-content-center">
+                  {group.map((item) => (
+                    <Col key={item.id} xs={12} sm={6} md={3}>
+                      <Card className={style.itemCard}>
+                        <Card.Img
+                          variant="top"
+                          src={item.img}
+                          className={style.image}
+                        />
+                        <Card.Body>
+                          <Card.Title>{item.title}</Card.Title>
+                          <Card.Text className={style.price}>
+                            {item.price} zł
+                          </Card.Text>
+                          <Button
+                            variant="primary"
+                            onClick={() => navigate(`/item/${item.id}`)}
+                          >
+                            Zobacz szczegóły
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </Carousel.Item>
+            ))}
+          </Carousel>
         </div>
       </div>
 
       <div>
         <div>tu jakis ładny łacznik cos ala wieniec -----------</div>
         <h3>Nowości jako karuzela</h3>
-        {/* mapa polecanych produktów */}
-        <div>
-          <img src={img2} alt="" />
-        </div>
+
+        <Carousel
+          activeIndex={newsCarouselIndex}
+          onSelect={handleNewsCarouselSelect}
+          indicators={true}
+          interval={5000}
+          className={style.carousel}
+        >
+          {newItems.map((item, id) => (
+            <Carousel.Item key={id}>
+              <div className={style.newsItem}>
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className={style.newsImage}
+                />
+                <h4 className={style.newsTitle}>{item.title}</h4>
+                <p className={style.newsPrice}>{item.price} zł</p>
+                <Button
+                  variant="primary"
+                  onClick={() => navigate(`/item/${item.id}`)}
+                >
+                  Zobacz szczegóły
+                </Button>
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
       </div>
 
       <div>
@@ -100,7 +184,7 @@ function Home() {
             <p>Tu sie pordolnie lrem ipsum</p>
           </Col>
           <Col>
-            <img src={img} alt="" />
+            <img src={komes} alt="" />
             <p>duża fota</p>
           </Col>
         </Row>

@@ -4,6 +4,7 @@ import { RootState } from "../../../redux/store";
 import { getItems } from "../../../redux/slice/itemList";
 import style from "./ItemList.module.scss"
 import { Link } from "react-router-dom";
+import { addToCart } from "../../../redux/slice/cartSlice";
 
 function ItemList(props: { title: string; id: number }) {
   const dispatch = useDispatch();
@@ -14,6 +15,10 @@ function ItemList(props: { title: string; id: number }) {
   }, [dispatch]);
 
   const filteredItems = items.filter((item) => item.category === props.title);
+
+  const handleAddToCart = (item: any) => {
+    dispatch(addToCart({...item, quantity: 1}));
+  }
   return (
     <div>
       <h1>{props.title}</h1>
@@ -26,7 +31,7 @@ function ItemList(props: { title: string; id: number }) {
             <Link to={`/item/${item.id}`}>
             Zobacz szczegóły
           </Link>
-              <button >Dodaj do koszyka</button>
+              <button onClick={() => handleAddToCart(item)}>Dodaj do koszyka</button>
             </div>
         </div>
       ))}

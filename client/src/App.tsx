@@ -14,6 +14,8 @@ import Contact from "./components/pages/Contact/Contact";
 import Measurements from "./components/pages/Measurements/Measurements";
 import PrivacyPolicy from "./components/pages/PrivacyPolicy/PrivacyPolicy";
 import Item from "./components/pages/Item/Item";
+import ArmorFinish from "./components/pages/ArmorFinish/ArmorFinish";
+import Cart from "./components/pages/Cart/Cart";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
           <Route path="/contact" element={<Contact/>} />
           <Route path="/measurements" element={<Measurements/>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
+          <Route path="/armor-finish" element={<ArmorFinish/>} />
+          <Route path="/cart" element={<Cart/>} />
         </Routes>
         <Footer/>
       </Container>

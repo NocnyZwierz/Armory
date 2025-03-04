@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, isAction, PayloadAction } from "@reduxjs/toolkit";
 
 interface Products {
   id: number;
@@ -8,31 +8,44 @@ interface Products {
   quantity: number;
 }
 
-const initialState: Array<Products> = [];
+interface CartItem extends Products {
+  finish: string;
+}
+
+const initialState: Array<CartItem> = [];
 
 export const cartSlicer = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<Products>) => {
-      if (
-        state.findIndex((product) => product.id === action.payload.id) === -1
-      ) {
+    addToCart: (state, action: PayloadAction<CartItem>) => {
+      const index = state.findIndex(
+        product => product.id === action.payload.id && product.finish === action.payload.finish
+      );
+      if (index === -1) {
         state.push(action.payload);
       } else {
-        return state.map((item) => {
-          return item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item;
-        });
+        state[index].quantity += action.payload.quantity;
       }
     },
     removeProduct: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
-      return state.filter((item) => item.id !== id);
+      return state.filter((item) => item.id !== action.payload);
+    },
+    updateItemsInCart: (state, action: PayloadAction<{id: number; finish: string; quantity: number}>) => {
+      const index = state.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state[index].finish = action.payload.finish;
+        state[index].quantity = action.payload.quantity;
+      }
+    },
+    updateFinish: (state, action: PayloadAction<{ id: number; finish: string }>) => {
+      const index = state.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state[index].finish = action.payload.finish;
+      }
     },
   },
 });
 
-export const {addToCart, removeProduct} = cartSlicer.actions
-export default cartSlicer.reducer
+export const { addToCart, removeProduct, updateFinish, updateItemsInCart } = cartSlicer.actions;
+export default cartSlicer.reducer;
