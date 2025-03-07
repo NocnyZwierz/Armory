@@ -1,73 +1,66 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Product } from './interfaces/product.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { db } from './../db';
 
 @Injectable()
 export class ProductsService {
-  search(query: string): Product[] {
-    const lowerQuery = query.toLowerCase();
-    return this.products.filter(
-      (product) =>
-        product.title.toLowerCase().includes(lowerQuery) ||
-        product.description.toLowerCase().includes(lowerQuery),
-    );
-  }
-  private products: Product[] = db.items;
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
 
-  findAll(): Product[] {
-    return this.products;
+  async findAll(): Promise<Product[]> {
+    return await this.productRepository.find();
   }
 
-  findOne(id: string): Product {
-    const product = this.products.find((product) => product.id === id);
+  async findOne(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
     if (!product) {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
     return product;
   }
 
-  create(createProductDto: CreateProductDto): Product {
-    const { ...productData } = createProductDto;
-    const newProduct: Product = {
-      ...productData,
-    };
-    this.products.push(newProduct);
-    return newProduct;
+  async search(query: string): Promise<Product[]> {
+    return await this.productRepository
+      .createQueryBuilder('product')
+      .where(
+        'LOWER(product.title) LIKE :query OR LOWER(product.description) LIKE :query',
+        {
+          query: `%${query.toLowerCase()}%`,
+        },
+      )
+      .getMany();
   }
 
-  update(id: string, updateProductDto: UpdateProductDto): Product {
-    const index = this.products.findIndex((product) => product.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Product with id ${id} not found`);
-    }
-
-    const existingProduct = this.products[index];
-
-    for (const key in updateProductDto) {
-      if (
-        existingProduct[key] !== undefined &&
-        existingProduct[key] !== null &&
-        updateProductDto[key] !== undefined &&
-        updateProductDto[key] !== null
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        existingProduct[key] = updateProductDto[key];
-      }
-    }
-
-    this.products[index] = existingProduct;
-    return existingProduct;
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const newProduct = this.productRepository.create(createProductDto);
+    return await this.productRepository.save(newProduct);
   }
 
-  remove(id: string): { message: string } {
-    const index = this.products.findIndex((product) => product.id === id);
-    if (index === -1) {
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    await this.productRepository.update(id, updateProductDto);
+    const updatedProduct = await this.productRepository.findOne({
+      where: { id },
+    });
+    if (!updatedProduct) {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
-    this.products.splice(index, 1);
+    return updatedProduct;
+  }
+
+  async remove(id: string): Promise<{ message: string }> {
+    const deleteResult = await this.productRepository.delete(id);
+    if (deleteResult.affected === 0) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
     return { message: 'Product deleted successfully' };
   }
 }

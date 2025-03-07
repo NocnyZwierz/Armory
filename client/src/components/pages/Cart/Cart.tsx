@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getFinishe } from "../../../redux/slice/finishesSlice";
 import { removeProduct, updateItemsInCart } from "../../../redux/slice/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const finishes = useSelector((state: RootState) => state.finishe);
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart);
+  const navigate = useNavigate();
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -130,6 +132,7 @@ const Cart = () => {
       </Button>
       <h3>Podsumowanie</h3>
       <p>Cena całkowita koszyka: {totalPrice} PLN</p>
+      <button onClick={() => navigate('/order-form')}>Złóż zamówienie</button>
     </Container>
   );
 };

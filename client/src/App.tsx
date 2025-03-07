@@ -1,6 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/views/Navbar/Navbar";
 import Home from "./components/pages/Home/Home";
 import { Container } from "react-bootstrap";
@@ -16,8 +16,14 @@ import PrivacyPolicy from "./components/pages/PrivacyPolicy/PrivacyPolicy";
 import Item from "./components/pages/Item/Item";
 import ArmorFinish from "./components/pages/ArmorFinish/ArmorFinish";
 import Cart from "./components/pages/Cart/Cart";
+import OrderForm from "./components/pages/OrderForm/OrderForm";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+import NotFound from "./components/pages/NotFound/NotFound";
 
 function App() {
+  const CartStatus = useSelector((state: RootState) => state.cart);
+  console.log(CartStatus, "<---------------------");
   return (
     <main>
       <Container className={style.mainDiv}>
@@ -34,6 +40,11 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
           <Route path="/armor-finish" element={<ArmorFinish/>} />
           <Route path="/cart" element={<Cart/>} />
+          { CartStatus && CartStatus.length > 0
+          ?  <Route path="/order-form" element={<OrderForm/>} />
+          : <Route path="/order-form" element={<Navigate to="/shop"/>} />
+          }
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer/>
       </Container>
