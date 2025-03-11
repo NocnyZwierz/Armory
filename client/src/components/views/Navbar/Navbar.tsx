@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "./Navbar.module.scss";
-import { Col, Row, Nav, Navbar } from "react-bootstrap";
+import { Col, Row, Nav, Navbar, Container, FormControl, Button, Form } from "react-bootstrap";
 import { BiCart } from "react-icons/bi";
 import img from "../../../assets/main.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 
@@ -11,10 +11,36 @@ const NavbarMain = () => {
   const navigate = useNavigate();
   const cartItems = useSelector((state: RootState) => state.cart);
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const [searchPhrase, setSearchPhrase] = useState("");
+
+  const handleSearch = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    if (searchPhrase.trim()) {
+      navigate(`/search/${searchPhrase}`);
+    }
+  };
+
 
   return (
     <div className={style.main}>
-      <input />
+            <Container className={style.headerContainer}>
+        <Form className={style.searchForm} onSubmit={handleSearch}>
+          <FormControl
+            type="search"
+            placeholder="Szukaj..."
+            className={style.searchInput}
+            value={searchPhrase}
+            onChange={(e) => setSearchPhrase(e.target.value)}
+          />
+          <Button
+            variant="outline-success"
+            type="submit"
+            className={style.searchButton}
+          >
+            Szukaj
+          </Button>
+        </Form>
+      </Container>
       <Row>
         <Col>
           <div className={style.imgDiv} onClick={() => navigate("/")}>
@@ -22,14 +48,6 @@ const NavbarMain = () => {
           </div>
         </Col>
         <Col>
-          {/* <div>
-            <Nav.Link as={Link} to="/login">
-              Logowanie
-            </Nav.Link>
-            <Nav.Link as={Link} to="/register">
-              Rejestracja
-            </Nav.Link>
-          </div> */}
           <Row>
             <Col>
               <div onClick={() => navigate("/cart")}>{BiCart({})}</div>

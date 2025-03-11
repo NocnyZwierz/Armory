@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-// products.controller.ts
 import {
   Controller,
   Get,

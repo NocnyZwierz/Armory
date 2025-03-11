@@ -20,6 +20,7 @@ import OrderForm from "./components/pages/OrderForm/OrderForm";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import NotFound from "./components/pages/NotFound/NotFound";
+import Search from "./components/pages/Search/Search";
 
 function App() {
   const CartStatus = useSelector((state: RootState) => state.cart);
@@ -45,6 +46,7 @@ function App() {
           : <Route path="/order-form" element={<Navigate to="/shop"/>} />
           }
           <Route path="*" element={<NotFound />} />
+          <Route path="/search/:searchPhrase" element={<Search/>} />
         </Routes>
         <Footer/>
       </Container>

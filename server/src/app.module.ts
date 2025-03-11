@@ -9,18 +9,16 @@ import * as cors from 'cors';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
-import { SurfaceFinishModule } from './surface-finish/surface-finish.module';
 import { OrdersModule } from './orders/orders.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { CategoryModule } from './category/category.module';
+import { FinishesModule } from './finishes/finishes.module';
 
 
 @Module({
   imports: [
     ProductsModule,
-    CategoriesModule,
-    SurfaceFinishModule,
     OrdersModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
@@ -33,6 +31,8 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    CategoryModule,
+    FinishesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
