@@ -1,0 +1,13 @@
+.main {
+  z-index: 2;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  background-color: white;
+  background-color: aqua;
+}
+.main img {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}/*# sourceMappingURL=Navbar.module.css.map */

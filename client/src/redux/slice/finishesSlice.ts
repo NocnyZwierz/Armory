@@ -1,22 +1,52 @@
-import { createSlice } from "@reduxjs/toolkit";
-import db from "../../db";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface Finish {
   id: number;
   title: string;
 }
 
-const initialState: Array<Finish> = [];
+interface FinishState {
+  finish: Finish[],
+  loading: boolean,
+  error?: string;
+}
 
-export const categorySlicer = createSlice({
-  name: "finishe",
+const initialState: FinishState = {
+  finish: [],
+  loading: false,
+};
+
+export const fetchFinish = createAsyncThunk(
+  "finish/fetchFinish",
+  async () => {
+    const response = await fetch("/api/finishes");
+    if (!response.ok) {
+      throw new Error("Błąd podczas pobierania wykończeń powierzchni");
+    }
+    const responsJson = (await response.json()) //do sprawdzenia dlaczego działą po przypisaniu do zmiennej
+    return responsJson  as Finish[];
+  }
+)
+
+export const finishSlicer = createSlice({
+  name: "finish",
   initialState,
-  reducers: {
-    getFinishe: () => {
-      return db.finishes;
-    },
-  },
+  reducers: {},
+      extraReducers: (builder) => {
+        builder
+          .addCase(fetchFinish.pending, (state) => {
+            state.loading = true;
+            state.error = undefined;
+          })
+          .addCase(fetchFinish.fulfilled, (state, action) => {
+            state.loading = false;
+            state.finish = action.payload;
+          })
+          .addCase(fetchFinish.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+          });
+      },
 });
 
-export const { getFinishe } = categorySlicer.actions;
-export default categorySlicer.reducer;
+export default finishSlicer.reducer

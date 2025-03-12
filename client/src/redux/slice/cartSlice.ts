@@ -1,4 +1,4 @@
-import { createSlice, isAction, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Products {
   id: number;
@@ -31,17 +31,16 @@ export const cartSlicer = createSlice({
     removeProduct: (state, action: PayloadAction<number>) => {
       return state.filter((item) => item.id !== action.payload);
     },
-    updateItemsInCart: (state, action: PayloadAction<{id: number; finish: string; quantity: number}>) => {
-      const index = state.findIndex(item => item.id === action.payload.id);
+    updateItemsInCart: (state, action: PayloadAction<{ id: number; finish: string; quantity: number }>) => {
+      const index = state.findIndex(item => item.id === action.payload.id && item.finish === action.payload.finish);
       if (index !== -1) {
-        state[index].finish = action.payload.finish;
         state[index].quantity = action.payload.quantity;
       }
     },
-    updateFinish: (state, action: PayloadAction<{ id: number; finish: string }>) => {
-      const index = state.findIndex(item => item.id === action.payload.id);
+    updateFinish: (state, action: PayloadAction<{ id: number; oldFinish: string; newFinish: string }>) => {
+      const index = state.findIndex(item => item.id === action.payload.id && item.finish === action.payload.oldFinish);
       if (index !== -1) {
-        state[index].finish = action.payload.finish;
+        state[index].finish = action.payload.newFinish;
       }
     },
   },

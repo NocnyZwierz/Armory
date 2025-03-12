@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
 import style from "./Item.module.scss";
-import { getFinishe } from "../../../redux/slice/finishesSlice";
+import { fetchFinish } from "../../../redux/slice/finishesSlice";
 import { addToCart } from "../../../redux/slice/cartSlice";
+import  { fetchItems }  from "../../../redux/slice/itemList";
 
 function Item() {
   const { id } = useParams();
-  const items = useSelector((state: RootState) => state.item);
-  const item = items.find((el) => el.id === Number(id));
+  const { items } = useAppSelector((state: RootState) => state.item);
+  const item = items.find((el: any) => el.id === id);
+  const {finish} = useAppSelector ((state: RootState) => state.finish);
   const [selectedFinish, setSelectedFinish] = useState<string>("Mirror Polish");
   const [quantity, setQuantity] = useState<number>(1);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const finishes = useSelector((state: RootState) => state.finishe);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getFinishe());
-  }, [dispatch]);
+    if(items.length === 0) {
+      dispatch(fetchItems());
+    }
+    dispatch(fetchFinish());
+    console.log()
+  }, [dispatch, items.length]);
+  
 
   if (!item) {
     return <div>Nie znaleziono produktu</div>;
@@ -63,7 +68,7 @@ function Item() {
                       value={selectedFinish}
                       onChange={(e) => setSelectedFinish(e.target.value)}
                     >
-                      {finishes.map((finish) => (
+                      {finish.map((finish) => (
                         <option key={finish.id} value={finish.title}>
                           {finish.title}
                         </option>

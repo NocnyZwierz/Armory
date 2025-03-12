@@ -1,20 +1,21 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
-import { getItems } from "../../../redux/slice/itemList";
+import  { fetchItems }  from "../../../redux/slice/itemList";
 import style from "./ItemList.module.scss"
 import { Link } from "react-router-dom";
 import { addToCart } from "../../../redux/slice/cartSlice";
 
 function ItemList(props: { title: string; id: number }) {
-  const dispatch = useDispatch();
-  const items = useSelector((state: RootState) => state.item);
+  const dispatch = useAppDispatch();
+  const items = useAppSelector((state: RootState) => state.item.items);
 
   useEffect(() => {
-    dispatch(getItems());
+    dispatch(fetchItems());
   }, [dispatch]);
 
-  const filteredItems = items.filter((item) => item.category === props.title);
+  const filteredItems = items.filter((item: any) => item.category === props.id);
 
   const handleAddToCart = (item: any) => {
     dispatch(addToCart({...item, quantity: 1}));

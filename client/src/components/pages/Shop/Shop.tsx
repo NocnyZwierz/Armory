@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { getCategory } from "../../../redux/slice/categorySlice";
+import { fetchCategory  } from "../../../redux/slice/categorySlice";
 import style from "./Shop.module.scss";
 import ItemList from "../ItemList/ItemList";
 import { useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
 interface Category {
   id: number;
@@ -13,24 +13,24 @@ interface Category {
 }
 
 const Shop = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const categories = useSelector((state: RootState) => state.category);
+  const { category } = useAppSelector((state: RootState) => state.category);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   useEffect(() => {
-    dispatch(getCategory());
+    dispatch(fetchCategory());
   }, [dispatch]);
   
   useEffect(() => {
     const urlCategory = searchParams.get("category");
     if (urlCategory) {
-      const findCategory = categories.find((cat) => cat.title === urlCategory);
+      const findCategory = category.find((cat) => cat.title === urlCategory);
       setSelectedCategory(findCategory || null);
     } else {
       setSelectedCategory(null);
     }
-  }, [searchParams, categories]);
+  }, [searchParams, category]);
 
   const handleCategoryClick = (cat: Category) => {
     const newParams = new URLSearchParams(searchParams);
@@ -45,7 +45,7 @@ const Shop = () => {
       <Row>
         <Col>
           <h2>Kategorie</h2>
-          {categories.map((cat) => (
+          {category.map((cat) => (
             <div key={cat.id} onClick={() => handleCategoryClick(cat)}>
               {cat.title}
             </div>
@@ -54,7 +54,7 @@ const Shop = () => {
         <Col>
           {selectedCategory === null ? (
             <>
-              {categories.map((cat) => (
+              {category.map((cat) => (
                 <div
                   key={cat.id}
                   className={style.main}

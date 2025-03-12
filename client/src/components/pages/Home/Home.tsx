@@ -3,11 +3,12 @@ import img from "../../../assets/Tło.jpg";
 import komes from "../../../assets/Komes.jpg"
 import style from "./Home.module.scss";
 import { Button, Card, Carousel, Col, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getCategory } from "../../../redux/slice/categorySlice";
+import { fetchCategory } from "../../../redux/slice/categorySlice";
 import { RootState } from "../../../redux/store";
-import { getItems } from "../../../redux/slice/itemList";
+import  { fetchItems }  from "../../../redux/slice/itemList";
 
 interface Category {
   id: number;
@@ -18,10 +19,10 @@ interface Category {
 const VISIBLE_ITEMS = 4;
 
 function Home() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const categories = useSelector((state: RootState) => state.category);
-  const items = useSelector((state: RootState) => state.item);
+  const { category } = useAppSelector((state: RootState) => state.category);
+  const { items } = useAppSelector((state: RootState) => state.item);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -30,8 +31,8 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getCategory());
-    dispatch(getItems());
+    dispatch(fetchCategory());
+    dispatch(fetchItems());
   }, [dispatch]);
 
   useEffect(() => {
@@ -43,12 +44,12 @@ function Home() {
   useEffect(() => {
     const urlCategory = searchParams.get("category");
     if (urlCategory) {
-      const findCategory = categories.find((cat) => cat.title === urlCategory);
+      const findCategory = category.find((cat) => cat.title === urlCategory);
       setSelectedCategory(findCategory || null);
     } else {
       setSelectedCategory(null);
     }
-  }, [searchParams, categories]);
+  }, [searchParams, category]);
 
   const handleCategoryClick = (cat: Category) => {
     const newParams = new URLSearchParams(searchParams);
@@ -58,6 +59,7 @@ function Home() {
     navigate(`/shop?${newParams.toString()}`);
   };
 
+ 
   const recommendedItems = items.filter((item) => item.featured === true);
   const newItems = items.filter((item) => item.new === true);
 
@@ -84,7 +86,7 @@ function Home() {
         <div>tu jakis ładny łacznik cos ala wieniec -----------</div>
         <h3>Kategorie</h3>
         <div className={style.categoryContainer}>
-          {categories.map((cat) => (
+          {category.map((cat) => (
             <div
               key={cat.id}
               className={style.category}

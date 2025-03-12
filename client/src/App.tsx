@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/views/Navbar/Navbar";
@@ -21,10 +21,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import NotFound from "./components/pages/NotFound/NotFound";
 import Search from "./components/pages/Search/Search";
+import AdminPanel from "./components/pages/AdminPanel/AdminPanel";
 
 function App() {
+
   const CartStatus = useSelector((state: RootState) => state.cart);
-  console.log(CartStatus, "<---------------------");
   return (
     <main>
       <Container className={style.mainDiv}>
@@ -47,6 +48,7 @@ function App() {
           }
           <Route path="*" element={<NotFound />} />
           <Route path="/search/:searchPhrase" element={<Search/>} />
+          <Route path="/admin-panel" element={<AdminPanel/>} />
         </Routes>
         <Footer/>
       </Container>

@@ -29,7 +29,6 @@ export class CreateProductDto {
   featured: boolean;
 
   @IsString()
-  @IsNotEmpty()
   img: string;
 
   @IsString()

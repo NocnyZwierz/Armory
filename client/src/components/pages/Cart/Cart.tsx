@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
-import { getFinishe } from "../../../redux/slice/finishesSlice";
+import { fetchFinish } from "../../../redux/slice/finishesSlice";
 import { removeProduct, updateItemsInCart } from "../../../redux/slice/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const finishes = useSelector((state: RootState) => state.finishe);
-  const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const { finish } = useAppSelector((state: RootState) => state.finish);
+  const cartItems = useAppSelector((state: RootState) => state.cart);
+  console.log(cartItems)
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
+  
   const handleRemove = (id: number) => {
     dispatch(removeProduct(id));
   };
-
+  console.log(cartItems)
   useEffect(() => {
-    dispatch(getFinishe());
+    dispatch(fetchFinish());
   }, [dispatch]);
 
   const [localCartUpdates, setLocalCartUpdates] = useState<{
@@ -75,7 +76,7 @@ const Cart = () => {
     <Container className="py-4">
       <h1>Koszyk</h1>
       {cartItems.map((item) => (
-        <div key={item.id}>
+        <div>
           <Row className="align-items-center mb-3">
             <Col>
               <div>
@@ -90,7 +91,7 @@ const Cart = () => {
                   value={localCartUpdates[item.id]?.finish || item.finish}
                   onChange={(e) => handleFinishChange(item.id, e.target.value)}
                 >
-                  {finishes.map((finish) => (
+                  {finish.map((finish) => (
                     <option key={finish.id} value={finish.title}>
                       {finish.title}
                     </option>

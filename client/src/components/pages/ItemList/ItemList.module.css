@@ -1,0 +1,9 @@
+.mainElement {
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+}
+.mainElement img {
+  width: 100px;
+  height: 100px;
+}/*# sourceMappingURL=ItemList.module.css.map */
