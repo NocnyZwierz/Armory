@@ -3,6 +3,7 @@ import styles from "./OrderForm.module.scss";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   firstName: string;
@@ -12,6 +13,7 @@ interface FormData {
 }
 
 const OrderForm = () => {
+  const navigate = useNavigate();
   const cartItems = useAppSelector((state: RootState) => state.cart);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -25,17 +27,43 @@ const OrderForm = () => {
     0
   );
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: { target: any; preventDefault: () => void }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: { target: any; preventDefault: () => void }) => {
     e.preventDefault();
-    console.log("Dane zamówienia:", formData);
+    const orderData = {
+      customerName: formData.firstName,
+      customerSurname: formData.lastName,
+      customerEmail: formData.email,
+      deliveryAddress: formData.address,
+      items: cartItems,
+      totalAmount: totalPrice,
+    };
+    try {
+      const response = await fetch("api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        console.error("Błąd przy wysyłaniu zamówienia:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Zamówienie zostało wysłane poprawnie:", data);
+      navigate("/");
+    } catch (error) {
+      console.error("Wystąpił błąd podczas wysyłania zamówienia:", error);
+    }
   };
 
   return (
@@ -70,7 +98,6 @@ const OrderForm = () => {
               <Col>
                 <p>Cena: {item.price} PLN</p>
               </Col>
-
             </Row>
           </div>
         ))}

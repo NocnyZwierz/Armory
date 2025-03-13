@@ -12,31 +12,31 @@ const Cart = () => {
   const navigate = useNavigate();
   const { finish } = useAppSelector((state: RootState) => state.finish);
   const cartItems = useAppSelector((state: RootState) => state.cart);
-  console.log(cartItems)
+  
+  const [localCartUpdates, setLocalCartUpdates] = useState<{
+    [id: number]: { quantity: number; finish: string };
+  }>({});
+
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  
   const handleRemove = (id: number) => {
     dispatch(removeProduct(id));
   };
-  console.log(cartItems)
+
   useEffect(() => {
     dispatch(fetchFinish());
   }, [dispatch]);
 
-  const [localCartUpdates, setLocalCartUpdates] = useState<{
-    [id: number]: { quantity: number; finish: string };
-  }>({});
 
   useEffect(() => {
     const initialUpdates: {
       [id: number]: { quantity: number; finish: string };
     } = {};
-    cartItems.forEach((item) => {
-      initialUpdates[item.id] = { quantity: item.quantity, finish: item.finish };
+    cartItems.forEach((item,index) => {
+      initialUpdates[index] = { quantity: item.quantity, finish: item.finish };
     });
     setLocalCartUpdates(initialUpdates);
   }, [cartItems]);
@@ -56,10 +56,10 @@ const Cart = () => {
   };
 
   const handleUpdateCart = () => {
-    Object.keys(localCartUpdates).forEach((key) => {
-      const id = parseInt(key, 10);
-      const { quantity, finish } = localCartUpdates[id];
-      dispatch(updateItemsInCart({ id, finish, quantity }));
+    Object.keys(localCartUpdates).forEach((key:any, index) => {
+      const index2 = parseInt(key, 10);
+      const { quantity, finish } = localCartUpdates[index2];
+      dispatch(updateItemsInCart({ id: index2, finish, quantity }));
     });
   };
 
@@ -75,7 +75,7 @@ const Cart = () => {
   return (
     <Container className="py-4">
       <h1>Koszyk</h1>
-      {cartItems.map((item) => (
+      {cartItems.map((item,index) => (
         <div>
           <Row className="align-items-center mb-3">
             <Col>
@@ -88,8 +88,8 @@ const Cart = () => {
               <Form.Group controlId={`finishSelect-${item.id}`} className="mt-3">
                 <Form.Label>Rodzaj wykończenia</Form.Label>
                 <Form.Select
-                  value={localCartUpdates[item.id]?.finish || item.finish}
-                  onChange={(e) => handleFinishChange(item.id, e.target.value)}
+                  value={localCartUpdates[index]?.finish || item.finish}
+                  onChange={(e) => handleFinishChange(index, e.target.value)}
                 >
                   {finish.map((finish) => (
                     <option key={finish.id} value={finish.title}>
@@ -106,9 +106,9 @@ const Cart = () => {
               <Form.Control
                 type="number"
                 min="1"
-                value={localCartUpdates[item.id]?.quantity || item.quantity}
+                value={localCartUpdates[index]?.quantity || item.quantity}
                 onChange={(e) =>
-                  handleQuantityChange(item.id, Number(e.target.value))
+                  handleQuantityChange(index, Number(e.target.value))
                 }
               />
             </Col>
@@ -116,12 +116,12 @@ const Cart = () => {
               <p>
                 Cena całkowita:{" "}
                 {item.price *
-                  (localCartUpdates[item.id]?.quantity || item.quantity)}{" "}
+                  (localCartUpdates[index]?.quantity || item.quantity)}{" "}
                 PLN
               </p>
             </Col>
             <Col>
-              <div onClick={() => handleRemove(item.id)}>
+              <div onClick={() => handleRemove(index)}>
                 {FaRegTrashAlt({})}
               </div>
             </Col>

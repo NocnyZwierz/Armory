@@ -10,10 +10,13 @@ export class CreateOrderDto {
   @IsNotEmpty()
   customerSurname: string;
 
-
   @IsString()
   @IsNotEmpty()
   customerEmail: string;
+
+  @IsString()
+  @IsNotEmpty()
+  deliveryAddress: string;
 
   @IsArray()
   items: { productId: string; quantity: number }[];

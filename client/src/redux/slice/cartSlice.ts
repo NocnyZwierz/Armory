@@ -29,13 +29,13 @@ export const cartSlicer = createSlice({
       }
     },
     removeProduct: (state, action: PayloadAction<number>) => {
-      return state.filter((item) => item.id !== action.payload);
+     let copy = [...state];
+     copy.splice(action.payload,1);
+     return copy;
     },
     updateItemsInCart: (state, action: PayloadAction<{ id: number; finish: string; quantity: number }>) => {
-      const index = state.findIndex(item => item.id === action.payload.id && item.finish === action.payload.finish);
-      if (index !== -1) {
-        state[index].quantity = action.payload.quantity;
-      }
+        state[action.payload.id].quantity = action.payload.quantity;
+        state[action.payload.id].finish = action.payload.finish
     },
     updateFinish: (state, action: PayloadAction<{ id: number; oldFinish: string; newFinish: string }>) => {
       const index = state.findIndex(item => item.id === action.payload.id && item.finish === action.payload.oldFinish);
