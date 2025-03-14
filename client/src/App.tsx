@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/views/Navbar/Navbar";
 import Home from "./components/pages/Home/Home";
 import { Container } from "react-bootstrap";
-import style from "./App.module.scss"
+import style from "./App.module.scss";
 import Footer from "./components/views/Footer/Footer";
 import About from "./components/pages/About/About";
 import Shop from "./components/pages/Shop/Shop";
@@ -22,35 +22,47 @@ import { RootState } from "./redux/store";
 import NotFound from "./components/pages/NotFound/NotFound";
 import Search from "./components/pages/Search/Search";
 import AdminPanel from "./components/pages/AdminPanel/AdminPanel";
+import CookieConsent from "react-cookie-consent";
 
 function App() {
-
   const CartStatus = useSelector((state: RootState) => state.cart);
   return (
     <main>
       <Container className={style.mainDiv}>
+        <CookieConsent
+          location="bottom"
+          buttonText="Zgadzam się"
+          cookieName="myCookieConsent"
+          style={{ background: "#2B373B" }}
+          buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+          expires={150}
+        >
+          Ta strona używa cookies, aby zapewnić najlepsze doświadczenia
+          użytkownika.
+        </CookieConsent>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About/>} />
-          <Route path="/shop" element={<Shop/>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/item/:id" element={<Item />} />
-          <Route path="/gallery" element={<Gallery/>} />
-          <Route path="/terms" element={<Terms/>} />
-          <Route path="/contact" element={<Contact/>} />
-          <Route path="/measurements" element={<Measurements/>} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
-          <Route path="/armor-finish" element={<ArmorFinish/>} />
-          <Route path="/cart" element={<Cart/>} />
-          { CartStatus && CartStatus.length > 0
-          ?  <Route path="/order-form" element={<OrderForm/>} />
-          : <Route path="/order-form" element={<Navigate to="/shop"/>} />
-          }
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/measurements" element={<Measurements />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/armor-finish" element={<ArmorFinish />} />
+          <Route path="/cart" element={<Cart />} />
+          {CartStatus && CartStatus.length > 0 ? (
+            <Route path="/order-form" element={<OrderForm />} />
+          ) : (
+            <Route path="/order-form" element={<Navigate to="/shop" />} />
+          )}
           <Route path="*" element={<NotFound />} />
-          <Route path="/search/:searchPhrase" element={<Search/>} />
-          <Route path="/admin-panel" element={<AdminPanel/>} />
+          <Route path="/search/:query" element={<Search />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
         </Routes>
-        <Footer/>
+        <Footer />
       </Container>
     </main>
   );

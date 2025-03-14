@@ -43,8 +43,11 @@ export const cartSlicer = createSlice({
         state[index].finish = action.payload.newFinish;
       }
     },
+    clearCart: () => {
+      return [];
+    }
   },
 });
 
-export const { addToCart, removeProduct, updateFinish, updateItemsInCart } = cartSlicer.actions;
+export const { addToCart, removeProduct, updateFinish, updateItemsInCart, clearCart } = cartSlicer.actions;
 export default cartSlicer.reducer;

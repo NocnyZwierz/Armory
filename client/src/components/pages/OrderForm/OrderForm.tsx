@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styles from "./OrderForm.module.scss";
 import { Col, Container, Form, Row } from "react-bootstrap";
-import { useAppSelector } from "../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
-import { useNavigate } from "react-router-dom";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import { clearCart } from "../../../redux/slice/cartSlice";
 
 interface FormData {
   firstName: string;
@@ -13,7 +14,7 @@ interface FormData {
 }
 
 const OrderForm = () => {
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state: RootState) => state.cart);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -34,7 +35,7 @@ const OrderForm = () => {
     });
   };
 
-  const handleSubmit = async (e: { target: any; preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const orderData = {
       customerName: formData.firstName,
@@ -60,7 +61,19 @@ const OrderForm = () => {
 
       const data = await response.json();
       console.log("Zamówienie zostało wysłane poprawnie:", data);
-      navigate("/");
+
+      toast.success('Zamówienie przekazane do realizacji', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        onClose: () => {dispatch(clearCart())},
+        });
     } catch (error) {
       console.error("Wystąpił błąd podczas wysyłania zamówienia:", error);
     }
@@ -148,6 +161,19 @@ const OrderForm = () => {
         <button type="submit" className={styles.submitButton}>
           Zamów
         </button>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
       </form>
     </div>
   );

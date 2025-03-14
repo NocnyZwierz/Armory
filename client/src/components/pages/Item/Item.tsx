@@ -6,26 +6,26 @@ import { RootState } from "../../../redux/store";
 import style from "./Item.module.scss";
 import { fetchFinish } from "../../../redux/slice/finishesSlice";
 import { addToCart } from "../../../redux/slice/cartSlice";
-import  { fetchItems }  from "../../../redux/slice/itemList";
+import { fetchItems } from "../../../redux/slice/itemList";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 function Item() {
   const { id } = useParams();
   const { items } = useAppSelector((state: RootState) => state.item);
   const item = items.find((el: any) => el.id === id);
-  const {finish} = useAppSelector ((state: RootState) => state.finish);
+  const { finish } = useAppSelector((state: RootState) => state.finish);
   const [selectedFinish, setSelectedFinish] = useState<string>("Mirror Polish");
   const [quantity, setQuantity] = useState<number>(1);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if(items.length === 0) {
+    if (items.length === 0) {
       dispatch(fetchItems());
     }
     dispatch(fetchFinish());
-    console.log()
+    console.log();
   }, [dispatch, items.length]);
-  
 
   if (!item) {
     return <div>Nie znaleziono produktu</div>;
@@ -39,6 +39,17 @@ function Item() {
         finish: selectedFinish,
       })
     );
+    toast.success("Dodano do koszyka", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
   };
 
   return (
@@ -81,9 +92,7 @@ function Item() {
                       type="number"
                       min="1"
                       value={quantity}
-                      onChange={(e) =>
-                        setQuantity(Number(e.target.value))
-                      }
+                      onChange={(e) => setQuantity(Number(e.target.value))}
                     />
                   </Form.Group>
                   <div className="d-flex align-items-center justify-content-between mt-auto">
@@ -91,6 +100,19 @@ function Item() {
                     <Button variant="primary" onClick={handleAddToCart}>
                       Dodaj do koszyka
                     </Button>
+                    <ToastContainer
+                      position="top-center"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick={false}
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="light"
+                      transition={Bounce}
+                    />
                   </div>
                 </Card.Body>
               </Col>
