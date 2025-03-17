@@ -12,7 +12,21 @@ interface CartItem extends Products {
   finish: string;
 }
 
-const initialState: Array<CartItem> = [];
+// const getInitialStateFromLocalStorage = () => {
+//   const initialStateCandidate:Array<CartItem> = [];
+//   const currentLocalStoreCart = localStorage.getItem("cart");//nazwy
+//   //JSON.parse(currentLocalStoreCart)
+//   return currentLocalStoreCart ? JSON.parse(currentLocalStoreCart) : initialStateCandidate; 
+// }
+
+const loadCart = (): CartItem[] => {
+  const data = localStorage.getItem("cart");
+  return data ? JSON.parse(data) : [];
+};
+
+const initialState: Array<CartItem> = loadCart();
+
+
 
 export const cartSlicer = createSlice({
   name: "cart",

@@ -1,0 +1,15 @@
+.productsSection{
+    padding: 20px;
+.mainProductDiv {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px; 
+  }
+  
+  .productDiv {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+
+  }
+}

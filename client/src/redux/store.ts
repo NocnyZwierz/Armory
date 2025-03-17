@@ -1,8 +1,17 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, MiddlewareAPI } from "@reduxjs/toolkit";
 import  cartSlice  from "./slice/cartSlice";
 import categorySlicer  from "./slice/categorySlice";
 import  itemSlicer  from "./slice/itemList";
 import finishSlicer from "./slice/finishesSlice"
+
+const localStorageMiddleware = (storeAPI: MiddlewareAPI) => (next:any) => (action:any) => {
+    const result = next(action);
+    if (action.type.startsWith("cart/")) {
+      const cart = storeAPI.getState().cart;
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+    return result;
+  };
 
 export const store = configureStore({
     reducer: {
@@ -10,7 +19,10 @@ export const store = configureStore({
         category: categorySlicer,
         item: itemSlicer,
         finish: finishSlicer
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(localStorageMiddleware),
+    
 })
 
 export type RootState = ReturnType<typeof store.getState>

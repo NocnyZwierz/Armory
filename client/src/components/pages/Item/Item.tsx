@@ -41,7 +41,7 @@ function Item() {
     );
     toast.success("Dodano do koszyka", {
       position: "top-center",
-      autoClose: 2000,
+      autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true,
