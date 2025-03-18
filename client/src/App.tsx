@@ -91,7 +91,6 @@ function App() {
           </>
         )}
       </Routes>
-
       <Footer />
     </Container>
   );

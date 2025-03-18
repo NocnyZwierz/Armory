@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Post, Get, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Get, Body, ValidationPipe, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './order.entity';
+import { AuthGuard } from 'src/guard/admin.guard';
 
 @Controller('orders')
 export class OrdersController {
@@ -16,6 +17,7 @@ export class OrdersController {
   }
 
   @Get()
+  @UseGuards(new AuthGuard())
   getAllOrders(): Promise<Order[]> {
     return this.ordersService.findAll();
   }

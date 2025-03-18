@@ -20,7 +20,7 @@ export class PhotosController {
 
 
   @Post()
-  @UseInterceptors(FilesInterceptor('files', 10, { storage }))  // Użycie własnej konfiguracji storage
+  @UseInterceptors(FilesInterceptor('files', 10, { storage }))
   async uploadMultipleFiles(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body('productId') productId: string,

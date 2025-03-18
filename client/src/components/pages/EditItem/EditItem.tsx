@@ -44,7 +44,6 @@ const EditItem = () => {
     }
   }, [filteredItems]);
 
-  console.log(filteredItems, "<------- pobrany konkretnu produkt");
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

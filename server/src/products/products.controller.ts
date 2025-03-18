@@ -8,11 +8,13 @@ import {
   Param,
   ValidationPipe,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './product.entity';
+import { AuthGuard } from 'src/guard/admin.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -29,6 +31,7 @@ export class ProductsController {
   }
 
   @Post()
+  @UseGuards(new AuthGuard())
   createProduct(
     @Body(new ValidationPipe()) createProductDto: CreateProductDto,
   ): Promise<Product> {
@@ -36,6 +39,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @UseGuards(new AuthGuard())
   updateProduct(
     @Param('id') id: string,
     @Body(new ValidationPipe({ skipMissingProperties:true })) updateProductDto: UpdateProductDto,
@@ -49,6 +53,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @UseGuards(new AuthGuard())
   deleteProduct(@Param('id') id: string): Promise< { message: string }> {
     return this.productsService.remove(id);
   }

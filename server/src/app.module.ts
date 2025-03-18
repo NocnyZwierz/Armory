@@ -20,6 +20,7 @@ import { Photo } from './photos/photo.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { SanitizeMiddleware } from './middleware/sanitize.middleware';
 
 
 @Module({
@@ -64,5 +65,7 @@ export class AppModule implements NestModule {
       path: '*name',
       method: RequestMethod.ALL,
     });
+    consumer.apply(SanitizeMiddleware).forRoutes("*");
   }
+  
 }
