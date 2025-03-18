@@ -19,6 +19,7 @@ import { PhotosModule } from './photos/photos.module';
 import { Photo } from './photos/photo.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -52,6 +53,7 @@ import { join } from 'path';
     CategoryModule,
     FinishesModule,
     PhotosModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

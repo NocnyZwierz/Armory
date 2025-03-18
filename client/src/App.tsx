@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/views/Navbar/Navbar";
@@ -28,47 +28,72 @@ import EditItem from "./components/pages/EditItem/EditItem";
 
 function App() {
   const CartStatus = useSelector((state: RootState) => state.cart);
+  const [isAdmin, setIsAdmin] = useState<boolean>(!!localStorage.getItem("adminToken"));
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("adminToken");
+      setIsAdmin(!!token);
+    };
+
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
+
   return (
+    <Container className={style.mainDiv}>
+      <CookieConsent
+        location="bottom"
+        buttonText="Zgadzam się"
+        cookieName="myCookieConsent"
+        style={{ background: "#2B373B" }}
+        buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+        expires={150}
+      >
+        Ta strona używa cookies, aby zapewnić najlepsze doświadczenia użytkownika.
+      </CookieConsent>
 
-      <Container className={style.mainDiv}>
-        <CookieConsent
-          location="bottom"
-          buttonText="Zgadzam się"
-          cookieName="myCookieConsent"
-          style={{ background: "#2B373B" }}
-          buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
-          expires={150}
-        >
-          Ta strona używa cookies, aby zapewnić najlepsze doświadczenia
-          użytkownika.
-        </CookieConsent>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/item/:id" element={<Item />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/measurements" element={<Measurements />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/armor-finish" element={<ArmorFinish />} />
-          <Route path="/cart" element={<Cart />} />
-          {CartStatus && CartStatus.length > 0 ? (
-            <Route path="/order-form" element={<OrderForm />} />
-          ) : (
-            <Route path="/order-form" element={<Navigate to="/shop" />} />
-          )}
-          <Route path="*" element={<NotFound />} />
-          <Route path="/search/:query" element={<Search />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/add-item" element={<AddItem/>} />
-          <Route path="/edit-item/:id" element={<EditItem/>} />
-        </Routes>
-        <Footer />
-      </Container>
+      <Navbar />
 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/item/:id" element={<Item />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/measurements" element={<Measurements />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/armor-finish" element={<ArmorFinish />} />
+        <Route path="/cart" element={<Cart />} />
+        {CartStatus && CartStatus.length > 0 ? (
+          <Route path="/order-form" element={<OrderForm />} />
+        ) : (
+          <Route path="/order-form" element={<Navigate to="/shop" />} />
+        )}
+        <Route path="*" element={<NotFound />} />
+        <Route path="/search/:query" element={<Search />} />
+        <Route path="/admin-panel" element={<AdminPanel />} />
+
+        {isAdmin ? (
+          <>
+            <Route path="/add-item" element={<AddItem />} />
+            <Route path="/edit-item/:id" element={<EditItem />} />
+          </>
+        ) : (
+          <>
+            <Route path="/add-item" element={<Navigate to="/" />} />
+            <Route path="/edit-item/:id" element={<Navigate to="/" />} />
+          </>
+        )}
+      </Routes>
+
+      <Footer />
+    </Container>
   );
 }
 

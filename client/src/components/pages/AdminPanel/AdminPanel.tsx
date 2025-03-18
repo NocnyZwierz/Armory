@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import style from "./AdminPanel.module.scss";
 import { Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import AdminLogin from "../AdminLogin/AdminLogin";
 
 interface Product {
   id: string;
@@ -26,6 +27,8 @@ interface Order {
 }
 
 const AdminPanel = () => {
+  const [isLogged, setIsLogged] = useState<boolean>(false);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -33,6 +36,16 @@ const AdminPanel = () => {
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorOrders, setErrorOrders] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      setIsLogged(true);
+    } else {
+      setIsLogged(false);
+    }
+  }, []);
+
 
   useEffect(() => {
     fetch("/api/products")
@@ -68,6 +81,21 @@ const AdminPanel = () => {
       });
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ admin: "admin" }),
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+    localStorage.removeItem("adminToken");
+    setIsLogged(false);
+    navigate("/");
+  };
+
   const handleDelete = (id: string) => {
     if (window.confirm("Czy na pewno chcesz usunąć produkt?")) {
       fetch(`/api/products/${id}`, { method: "DELETE" })
@@ -85,10 +113,16 @@ const AdminPanel = () => {
     }
   };
 
+  if (!isLogged) {
+    return <AdminLogin onLoginSuccess={() => setIsLogged(true)} />;
+  }
+
   return (
     <div className={style.adminPanel}>
       <h1>Panel Administratora</h1>
-
+      <Button variant="secondary" onClick={handleLogout}>
+        Wyloguj
+      </Button>
       <section className={style.productsSection}>
         <h2>Produkty</h2>{" "}
         <Button onClick={() => navigate("/add-item")}>
