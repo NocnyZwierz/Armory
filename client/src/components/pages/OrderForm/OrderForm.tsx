@@ -59,8 +59,8 @@ const OrderForm = () => {
         return;
       }
 
-      const data = await response.json();
-      console.log("Zamówienie zostało wysłane poprawnie:", data);
+      // const data = await response.json();
+      // console.log("Zamówienie zostało wysłane poprawnie:", data);
 
       toast.success('Zamówienie przekazane do realizacji', {
         position: "top-center",

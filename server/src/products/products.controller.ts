@@ -42,6 +42,7 @@ export class ProductsController {
   ): Promise<Product> {
     return this.productsService.update(id, updateProductDto);
   }
+  
   @Get('search/:query')
   searchProducts(@Param('query') query: string): Promise<Product[]> {
     return this.productsService.search(query);

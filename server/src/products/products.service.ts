@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { promises as fs } from 'fs';
 
 @Injectable()
 export class ProductsService {
@@ -57,10 +58,26 @@ export class ProductsService {
   }
 
   async remove(id: string): Promise<{ message: string }> {
-    const deleteResult = await this.productRepository.delete(id);
-    if (deleteResult.affected === 0) {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['photos'],
+    });
+    if (!product) {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
-    return { message: 'Product deleted successfully' };
+
+    for (const photo of product.photos) {
+      try {
+        await fs.unlink(photo.path);
+        console.log(`Deleted file: ${photo.path}`);
+      } catch (error) {
+        console.error(`Error deleting file ${photo.path}:`, error);
+      }
+    }
+
+    // Usuwamy produkt (przy cascade: true zdjęcia zostaną usunięte z bazy automatycznie)
+    await this.productRepository.remove(product);
+    return { message: 'Product and its photos deleted successfully' };
   }
 }
+

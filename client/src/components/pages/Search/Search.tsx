@@ -61,8 +61,6 @@ const Search = () => {
       fetchData();
     }
   }, [query]);
-  console.log(query, "<-------------------Query");
-  console.log(filteredItems, "<----------- Wyszukane przedmioty");
 
   return (
     <div className={style.searchContainer}>

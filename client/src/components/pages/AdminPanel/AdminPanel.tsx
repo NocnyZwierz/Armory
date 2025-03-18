@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import style from "./AdminPanel.module.scss";
 import { Button, Col, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 interface Product {
   id: string;
@@ -16,9 +17,13 @@ interface Order {
   deliveryAddress: string;
   customerEmail: string;
   id: string;
-  items: { productId: string; title: string; price: number; quantity: number }[];
+  items: {
+    productId: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }[];
 }
-
 
 const AdminPanel = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,7 +32,8 @@ const AdminPanel = () => {
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorOrders, setErrorOrders] = useState(null);
-  console.log(orders,"<-------- zamówienia")
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch("/api/products")
       .then((response) => {
@@ -39,7 +45,6 @@ const AdminPanel = () => {
       .then((data) => {
         setProducts(data);
         setLoadingProducts(false);
-        console.log(data, "<-----------product");
       })
       .catch((error) => {
         setErrorProducts(error.message);
@@ -56,21 +61,39 @@ const AdminPanel = () => {
       .then((data) => {
         setOrders(data);
         setLoadingOrders(false);
-        console.log(data, "<-------------order");
       })
       .catch((error) => {
         setErrorOrders(error.message);
         setLoadingOrders(false);
       });
   }, []);
-  console.log(products, "<---------już przypisane produkty");
-  console.log(orders, "<----------- już przypisane zamówienia");
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Czy na pewno chcesz usunąć produkt?")) {
+      fetch(`/api/products/${id}`, { method: "DELETE" })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Błąd podczas usuwania produktu");
+          }
+          setProducts((prevProducts) =>
+            prevProducts.filter((product) => product.id !== id)
+          );
+        })
+        .catch((error) => {
+          console.error("Error deleting product: ", error);
+        });
+    }
+  };
+
   return (
     <div className={style.adminPanel}>
       <h1>Panel Administratora</h1>
 
       <section className={style.productsSection}>
-        <h2>Produkty</h2>
+        <h2>Produkty</h2>{" "}
+        <Button onClick={() => navigate("/add-item")}>
+          Dodaj produkt do sklepu
+        </Button>
         {loadingProducts ? (
           <p>Ładowanie produktów...</p>
         ) : errorProducts ? (
@@ -89,10 +112,15 @@ const AdminPanel = () => {
                     <p>{product.category}</p>
                     <Row>
                       <Col>
-                        <Button>Edytuj</Button>
+                      <Button onClick={() => navigate(`/edit-item/${product.id}`)}>Edytuj</Button>
                       </Col>
                       <Col>
-                        <Button>Usuń</Button>
+                        <Button
+                          variant="danger"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Usuń
+                        </Button>
                       </Col>
                     </Row>
                   </Col>
@@ -134,14 +162,13 @@ const AdminPanel = () => {
                     <p>{order.id}</p>
                   </Col>
                   <div className={style.orderItems}>
-                    {Array.isArray(order.items) &&
-                      order.items.map((item, index) => (
-                        <div key={index}>
-                          <p>Product ID: {item.title}</p>
-                          <p>Price: {item.price}</p>
-                          <p>Quantity: {item.quantity}</p>
-                        </div>
-                      ))}
+                    {order.items.map((item, index) => (
+                      <div key={index}>
+                        <p>Product ID: {item.title}</p>
+                        <p>Price: {item.price}</p>
+                        <p>Quantity: {item.quantity}</p>
+                      </div>
+                    ))}
                   </div>
                 </Row>
               </div>

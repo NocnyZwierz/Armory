@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
 import { fetchItems } from "../../../redux/slice/itemList";
@@ -32,6 +31,7 @@ function ItemList(props: { title: string; id: number }) {
       transition: Bounce,
     });
   };
+
   return (
     <div>
       <h1>{props.title}</h1>
@@ -39,7 +39,7 @@ function ItemList(props: { title: string; id: number }) {
         <div className={style.mainElement} key={item.id}>
           <h2>{item.title}</h2>
           <p>Cena: {item.price}</p>
-          <img src={item.img} alt={item.title} />
+          <img src={item.img} alt=""/>
           <div>
             <Link to={`/item/${item.id}`}>Zobacz szczegóły</Link>
             <button onClick={() => handleAddToCart(item)}>
@@ -66,3 +66,4 @@ function ItemList(props: { title: string; id: number }) {
 }
 
 export default ItemList;
+

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Product } from 'src/products/product.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Photo {
@@ -16,8 +16,10 @@ export class Photo {
 
   @Column()
   mimetype: string;
+  
 
-  @ManyToOne(() => Product, (product) => product.photos)
+  @ManyToOne(() => Product, (product) => product.photos, { cascade: true, onDelete: 'CASCADE' })
+  @JoinColumn()
   product: Product;
 }
 

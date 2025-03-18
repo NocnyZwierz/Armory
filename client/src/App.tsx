@@ -23,11 +23,13 @@ import NotFound from "./components/pages/NotFound/NotFound";
 import Search from "./components/pages/Search/Search";
 import AdminPanel from "./components/pages/AdminPanel/AdminPanel";
 import CookieConsent from "react-cookie-consent";
+import AddItem from "./components/pages/AddItem/AddItem";
+import EditItem from "./components/pages/EditItem/EditItem";
 
 function App() {
   const CartStatus = useSelector((state: RootState) => state.cart);
   return (
-    <main>
+
       <Container className={style.mainDiv}>
         <CookieConsent
           location="bottom"
@@ -61,10 +63,12 @@ function App() {
           <Route path="*" element={<NotFound />} />
           <Route path="/search/:query" element={<Search />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/add-item" element={<AddItem/>} />
+          <Route path="/edit-item/:id" element={<EditItem/>} />
         </Routes>
         <Footer />
       </Container>
-    </main>
+
   );
 }
 

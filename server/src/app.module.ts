@@ -20,6 +20,7 @@ import { Photo } from './photos/photo.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -38,9 +39,14 @@ import { join } from 'path';
       dest: './uploads',
     }),
     ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads/'
+    }),
+    ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../', 'client', 'build'),
       exclude: ['/api/\\(.*name\\)'],
     }),
+
     ProductsModule,
     OrdersModule,
     CategoryModule,

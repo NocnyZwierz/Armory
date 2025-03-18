@@ -9,6 +9,17 @@ import { addToCart } from "../../../redux/slice/cartSlice";
 import { fetchItems } from "../../../redux/slice/itemList";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
+interface Items {
+  id: number;
+  title: string;
+  price: number;
+  category: string;
+  new: boolean;
+  featured: boolean;
+  img: string;
+  description: string;
+}
+
 function Item() {
   const { id } = useParams();
   const { items } = useAppSelector((state: RootState) => state.item);
@@ -16,20 +27,41 @@ function Item() {
   const { finish } = useAppSelector((state: RootState) => state.finish);
   const [selectedFinish, setSelectedFinish] = useState<string>("Mirror Polish");
   const [quantity, setQuantity] = useState<number>(1);
+  const [photos, setPhotos] = useState<any>([]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
 
   useEffect(() => {
     if (items.length === 0) {
       dispatch(fetchItems());
     }
     dispatch(fetchFinish());
-    console.log();
+  
   }, [dispatch, items.length]);
 
+  useEffect(() => {
+    const fetchData = async (item: any) => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/photos/${item.id}`, {
+          method: "GET",
+        });
+        const photosJson = await response.json();
+        setPhotos([...photosJson]);
+      } catch (error) {
+        console.error("Wystąpił błąd podczas wysyłania zamówienia:", error);
+      }
+      
+    }
+    if(item){
+      fetchData(item)
+    }
+  },[item])
   if (!item) {
     return <div>Nie znaleziono produktu</div>;
   }
+
+
 
   const handleAddToCart = () => {
     dispatch(
@@ -60,12 +92,16 @@ function Item() {
           <Card className={`${style.productCard} my-3`}>
             <Row className="g-0">
               <Col md={6}>
-                <Card.Img
-                  variant="top"
-                  src={item.img}
-                  alt={item.title}
-                  className={style.productImage}
-                />
+              {photos.map((photo:any) => {
+                     return <Card.Img
+                      variant="top"
+                      src={"http://localhost:3000/" + photo.path}
+                      alt={photo.title}
+                      className={style.productImage}
+                    />
+              })
+          
+              }
               </Col>
               <Col md={6}>
                 <Card.Body>

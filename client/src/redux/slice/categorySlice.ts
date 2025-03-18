@@ -20,7 +20,7 @@ const initialState: CategoryState = {
 export const fetchCategory = createAsyncThunk(
   "category/fetchCategory",
   async () => {
-    const response = await fetch("api/categories");
+    const response = await fetch("/api/categories");
     if (!response.ok) {
       throw new Error("Błąd podczas pobierania kategorii");
     }

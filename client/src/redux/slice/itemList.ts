@@ -15,6 +15,7 @@ interface ItemsState {
   items: Item[];
   loading: boolean;
   error?: string;
+  imageUrl?: string;
 }
 
 const initialState: ItemsState = {
@@ -28,6 +29,15 @@ export const fetchItems = createAsyncThunk("items/fetchItems", async () => {
     throw new Error("Błąd podczas pobierania produktów");
   }
   return (await response.json()) as Item[];
+});
+
+export const fetchImage = createAsyncThunk("items/fetchImage", async (id: number) => {
+  const response = await fetch(`/api/photos/${id}`);
+  if (!response.ok) {
+    throw new Error("Błąd podczas pobierania zdjęcia");
+  }
+  const responseJson = await response.json();
+  return responseJson[0].path
 });
 
 export const itemSlicer = createSlice({
@@ -47,7 +57,20 @@ export const itemSlicer = createSlice({
       .addCase(fetchItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(fetchImage.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(fetchImage.fulfilled, (state, action) => {
+        state.loading = false;
+        state.imageUrl = action.payload;
+      })
+      .addCase(fetchImage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
+
 export default itemSlicer.reducer;
