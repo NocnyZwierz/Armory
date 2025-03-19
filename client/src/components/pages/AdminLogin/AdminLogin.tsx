@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
@@ -10,10 +12,39 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!username.trim()) {
+      toast.error("Login nie może być pusty!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!password.trim()) {
+      toast.error("Hasło nie może być puste!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -27,25 +58,45 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
       }
 
       const data = await response.json();
-      
       if (!data.token) {
         throw new Error("Nieprawidłowa odpowiedź serwera");
       }
 
       localStorage.setItem("adminToken", data.token);
 
-      onLoginSuccess();
-
-      navigate("/admin-panel");
+      toast.success("Zalogowano pomyślnie!", {
+        position: "top-center",
+        autoClose: 300,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        onClose: () => {
+          onLoginSuccess();
+          navigate("/admin-panel");
+        },
+      });
     } catch (err: any) {
-      setError(err.message || "Wystąpił błąd podczas logowania");
+      toast.error(err.message || "Wystąpił błąd podczas logowania", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
   return (
     <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
       <h2>Logowanie do panelu admina</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
       <Form onSubmit={handleLogin}>
         <Form.Group controlId="formUsername">
           <Form.Label>Login</Form.Label>
@@ -54,7 +105,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             placeholder="Wprowadź login"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
         </Form.Group>
         <Form.Group controlId="formPassword" className="mt-3">
@@ -64,13 +114,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             placeholder="Wprowadź hasło"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </Form.Group>
         <Button variant="primary" type="submit" className="mt-3">
           Zaloguj się
         </Button>
       </Form>
+      <ToastContainer />
     </div>
   );
 };

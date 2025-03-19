@@ -8,11 +8,13 @@ import {
   Get,
   Param,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from './photos.service';
 import { Photo } from './photo.entity';
 import { storage } from './multer.config';
+import { AuthGuard } from 'src/guard/admin.guard';
 
 @Controller('photos')
 export class PhotosController {
@@ -20,6 +22,7 @@ export class PhotosController {
 
 
   @Post()
+  @UseGuards(new AuthGuard())
   @UseInterceptors(FilesInterceptor('files', 10, { storage }))
   async uploadMultipleFiles(
     @UploadedFiles() files: Array<Express.Multer.File>,

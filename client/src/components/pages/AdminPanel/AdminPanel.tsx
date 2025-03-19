@@ -26,9 +26,8 @@ interface Order {
   }[];
 }
 
-const AdminPanel = () => {
+const AdminPanel = (props:any) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
-
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -48,6 +47,7 @@ const AdminPanel = () => {
 
 
   useEffect(() => {
+    const token = localStorage.getItem("adminToken");
     fetch("/api/products")
       .then((response) => {
         if (!response.ok) {
@@ -63,8 +63,14 @@ const AdminPanel = () => {
         setErrorProducts(error.message);
         setLoadingProducts(false);
       });
+      
+    fetch("/api/orders", {
+      method: "GET",
+      headers : {
+        Authorization: `Bearer ${token}`
+      }
+    })
 
-    fetch("/api/orders")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Błąd podczas pobierania zamówień");
@@ -114,7 +120,10 @@ const AdminPanel = () => {
   };
 
   if (!isLogged) {
-    return <AdminLogin onLoginSuccess={() => setIsLogged(true)} />;
+    return <AdminLogin onLoginSuccess={() => {
+      props.setIsAdmin(true)
+      setIsLogged(true)
+    }} />;
   }
 
   return (

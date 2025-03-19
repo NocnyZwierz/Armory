@@ -33,9 +33,86 @@ const AddItem = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!title.trim()) {
+      toast.error("Pole tytułu nie może być puste!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!price.trim()) {
+      toast.error("Pole ceny nie może być puste!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    const parsedPrice = parseFloat(price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      toast.error("Cena musi być liczbą nieujemną!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!selectedCategory) {
+      toast.error("Musisz wybrać kategorię!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!description.trim()) {
+      toast.error("Opis nie może być pusty!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
     const product = {
       title,
-      price: parseFloat(price),
+      price: parsedPrice,
       category: selectedCategory,
       new: newProduct,
       featured,
@@ -51,7 +128,7 @@ const AddItem = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Błąd podczas dodawania produktu");
+        throw new Error("Błąd podczas dodawania produktu.");
       }
 
       const createdProduct = await response.json();
@@ -69,29 +146,23 @@ const AddItem = () => {
           body: formData,
         });
 
-        const responsFoto = await photosResponse.json();
-
         if (!photosResponse.ok) {
-          throw new Error("Błąd podczas dodawania zdjęć");
-        }
-        const body = {
-          img: responsFoto[0].path
+          throw new Error("Błąd podczas dodawania zdjęć.");
         }
 
-      const updateImg = await fetch(`/api/products/${productId}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
-        body: JSON.stringify(body)
-      });
-      if (!updateImg.ok) {
-        throw new Error("Błąd podczas update img");
-      }
-      }
+        const responsFoto = await photosResponse.json();
+        const body = { img: responsFoto[0].path };
 
-    
+        const updateImg = await fetch(`/api/products/${productId}`, {
+          headers: { "Content-Type": "application/json" },
+          method: "PATCH",
+          body: JSON.stringify(body),
+        });
 
+        if (!updateImg.ok) {
+          throw new Error("Błąd podczas aktualizacji zdjęcia.");
+        }
+      }
 
       setTitle("");
       setPrice("");
@@ -102,23 +173,24 @@ const AddItem = () => {
       setDescription("");
       setFiles(null);
 
-      toast.success("Dodano produkt do sklepu", {
+      toast.success("Dodano produkt do sklepu!", {
         position: "top-center",
         autoClose: 2000,
+        transition: Bounce,
+        onClose: () => navigate(-1),
+      });
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
+        pauseOnHover: false,
+        draggable: false,
         progress: undefined,
         theme: "light",
         transition: Bounce,
-        onClose: () => {
-          navigate(-1);
-        },
       });
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message);
     }
   };
 
@@ -133,7 +205,6 @@ const AddItem = () => {
             placeholder="Wprowadź tytuł produktu"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
           />
         </Form.Group>
 
@@ -144,7 +215,6 @@ const AddItem = () => {
             placeholder="Wprowadź cenę produktu"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            required
           />
         </Form.Group>
 
@@ -154,7 +224,6 @@ const AddItem = () => {
             as="select"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            required
           >
             <option value="">Wybierz kategorię</option>
             {category.map((cat) => (
@@ -191,7 +260,6 @@ const AddItem = () => {
             placeholder="Wprowadź opis produktu"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </Form.Group>
 
@@ -203,19 +271,7 @@ const AddItem = () => {
         <Button variant="primary" type="submit" className={style.submitButton}>
           Dodaj produkt
         </Button>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
+        <ToastContainer />
       </Form>
     </div>
   );

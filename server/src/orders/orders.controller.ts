@@ -17,7 +17,7 @@ export class OrdersController {
   }
 
   @Get()
-  @UseGuards(new AuthGuard())
+  @UseGuards(new AuthGuard('admin'))
   getAllOrders(): Promise<Order[]> {
     return this.ordersService.findAll();
   }

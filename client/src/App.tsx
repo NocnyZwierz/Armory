@@ -35,9 +35,11 @@ function App() {
       const token = localStorage.getItem("adminToken");
       setIsAdmin(!!token);
     };
-
+  
     window.addEventListener("storage", checkAuth);
-
+  
+    checkAuth(); // Sprawdzenie na start
+  
     return () => {
       window.removeEventListener("storage", checkAuth);
     };
@@ -77,9 +79,9 @@ function App() {
         )}
         <Route path="*" element={<NotFound />} />
         <Route path="/search/:query" element={<Search />} />
-        <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="/admin-panel" element={<AdminPanel setIsAdmin={setIsAdmin} />} />
 
-        {isAdmin ? (
+        {!!isAdmin ? (
           <>
             <Route path="/add-item" element={<AddItem />} />
             <Route path="/edit-item/:id" element={<EditItem />} />

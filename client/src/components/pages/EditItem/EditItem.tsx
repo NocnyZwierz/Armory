@@ -6,6 +6,7 @@ import { fetchCategory } from "../../../redux/slice/categorySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
 import { fetchItems } from "../../../redux/slice/itemList";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const EditItem = () => {
   const navigate = useNavigate();
@@ -18,7 +19,6 @@ const EditItem = () => {
     () => items.filter((item: any) => item.id === id),
     [items, id]
   );
-
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -47,9 +47,85 @@ const EditItem = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!price.trim()) {
+      toast.error("Pole ceny nie może być puste", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    const parsedPrice = parseFloat(price);
+
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      toast.error("Cena nie może być ujemna", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!title.trim()) {
+      toast.error("Pole tytułu nie może być puste", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+    if (!description.trim()) {
+      toast.error("Pole opis nie może być puste", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+    
+    if (!selectedCategory) {
+      toast.error("Pole kategorie nie może być puste", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
     const product = {
       title,
-      price: parseFloat(price),
+      price: parsedPrice,
       category: selectedCategory,
       new: newProduct,
       featured,
@@ -75,8 +151,17 @@ const EditItem = () => {
 
       navigate(-1);
     } catch (error: any) {
-      console.error(error);
-      alert(error.message);
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
@@ -84,7 +169,7 @@ const EditItem = () => {
     <div className={style.addItemContainer}>
       <h1>Edytuj produkt</h1>
       {filteredItems.length > 0 ? (
-        <img src={"http://localhost:3000/" +filteredItems[0].img} alt=""></img>
+        <img src={"http://localhost:3000/" + filteredItems[0].img} alt="" />
       ) : (
         <p>brak obrazka</p>
       )}
@@ -96,7 +181,6 @@ const EditItem = () => {
             placeholder="Wprowadź tytuł produktu"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
           />
         </Form.Group>
 
@@ -107,7 +191,6 @@ const EditItem = () => {
             placeholder="Wprowadź cenę produktu"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            required
           />
         </Form.Group>
 
@@ -117,7 +200,6 @@ const EditItem = () => {
             as="select"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            required
           >
             <option value="">Wybierz kategorię</option>
             {category.map((cat) => (
@@ -154,13 +236,13 @@ const EditItem = () => {
             placeholder="Wprowadź opis produktu"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </Form.Group>
 
         <Button variant="primary" type="submit" className={style.submitButton}>
           Uaktualnij produkt
         </Button>
+        <ToastContainer/>
       </Form>
     </div>
   );

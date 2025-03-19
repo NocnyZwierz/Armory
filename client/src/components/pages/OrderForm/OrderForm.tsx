@@ -28,15 +28,95 @@ const OrderForm = () => {
     0
   );
 
-  const handleChange = (e: { target: any; preventDefault: () => void }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
+  const validateForm = () => {
+    const { firstName, lastName, address, email } = formData;
+    if (!firstName.trim()) {
+      toast.error("Imię jest wymagane", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return false;
+    }
+    if (!lastName.trim()) {
+      toast.error("Nazwisko jest wymagane", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return false;
+    }
+    if (!address.trim()) {
+      toast.error("Adres dostawy jest wymagany", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return false;
+    }
+    if (!email.trim()) {
+      toast.error("Email jest wymagany", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Podaj prawidłowy adres email", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
     const orderData = {
       customerName: formData.firstName,
       customerSurname: formData.lastName,
@@ -55,27 +135,46 @@ const OrderForm = () => {
       });
 
       if (!response.ok) {
-        console.error("Błąd przy wysyłaniu zamówienia:", response.status);
+        toast.error("Błąd przy wysyłaniu zamówienia", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         return;
       }
 
-      // const data = await response.json();
-      // console.log("Zamówienie zostało wysłane poprawnie:", data);
-
-      toast.success('Zamówienie przekazane do realizacji', {
+      toast.success("Zamówienie przekazane do realizacji", {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 500,
         hideProgressBar: false,
         closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
+        pauseOnHover: false,
+        draggable: false,
         progress: undefined,
         theme: "light",
         transition: Bounce,
-        onClose: () => {dispatch(clearCart())},
-        });
+        onClose: () => {
+          dispatch(clearCart());
+        },
+      });
     } catch (error) {
-      console.error("Wystąpił błąd podczas wysyłania zamówienia:", error);
+      toast.error("Wystąpił błąd podczas wysyłania zamówienia", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
@@ -125,7 +224,6 @@ const OrderForm = () => {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            required
           />
         </label>
         <label>
@@ -135,7 +233,6 @@ const OrderForm = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            required
           />
         </label>
         <label>
@@ -145,7 +242,6 @@ const OrderForm = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            required
           />
         </label>
         <label>
@@ -155,25 +251,12 @@ const OrderForm = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
           />
         </label>
         <button type="submit" className={styles.submitButton}>
           Zamów
         </button>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
+        <ToastContainer />
       </form>
     </div>
   );

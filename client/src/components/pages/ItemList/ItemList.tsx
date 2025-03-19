@@ -21,11 +21,11 @@ function ItemList(props: { title: string; id: number }) {
     dispatch(addToCart({ ...item, quantity: 1 }));
     toast.success("Dodano do koszyka", {
       position: "top-center",
-      autoClose: 2000,
+      autoClose: 1000,
       hideProgressBar: false,
       closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
+      pauseOnHover: false,
+      draggable: false,
       progress: undefined,
       theme: "light",
       transition: Bounce,
@@ -39,7 +39,7 @@ function ItemList(props: { title: string; id: number }) {
         <div className={style.mainElement} key={item.id}>
           <h2>{item.title}</h2>
           <p>Cena: {item.price}</p>
-          <img src={item.img} alt=""/>
+          <img src={item.img} alt="" />
           <div>
             <Link to={`/item/${item.id}`}>Zobacz szczegóły</Link>
             <button onClick={() => handleAddToCart(item)}>
@@ -66,4 +66,3 @@ function ItemList(props: { title: string; id: number }) {
 }
 
 export default ItemList;
-

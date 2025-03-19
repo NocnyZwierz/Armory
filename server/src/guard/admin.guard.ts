@@ -6,7 +6,6 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
@@ -35,16 +34,9 @@ export class AuthGuard implements CanActivate {
     try {
       const decoded = jwt.verify(token, secretKey) as jwt.JwtPayload;
 
-      if (!decoded.id || !decoded.login || !decoded.role) {
+      if (!decoded.id || !decoded.admin) {
         throw new UnauthorizedException('Niepoprawne dane sesji');
       }
-
-      req.user = { id: decoded.id, login: decoded.login, role: decoded.role };
-
-      if (this.requiredRole && req.user.role !== this.requiredRole) {
-        throw new ForbiddenException('Brak uprawnień');
-      }
-
       return true;
     } catch (error) {
       console.error('Błąd dekodowania tokena:', error.message);

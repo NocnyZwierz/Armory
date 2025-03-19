@@ -74,8 +74,7 @@ export class ProductsService {
         console.error(`Error deleting file ${photo.path}:`, error);
       }
     }
-
-    // Usuwamy produkt (przy cascade: true zdjęcia zostaną usunięte z bazy automatycznie)
+    
     await this.productRepository.remove(product);
     return { message: 'Product and its photos deleted successfully' };
   }

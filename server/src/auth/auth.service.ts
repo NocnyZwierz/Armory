@@ -15,7 +15,7 @@ export class AuthService {
     @InjectRepository(Auth)
     private authRepository: Repository<Auth>,
   ) {}
-//$2b$10$8jbpEL6Gf9h0UdC2ejHqeuxgoLoMEnH3rUU5CeaQgFu3HFfL21lfW
+
   async login(loginDto: LoginDto): Promise<{ token: string }> {
     const { admin, password } = loginDto;
 
@@ -42,7 +42,6 @@ export class AuthService {
       jwtSecret,
       { expiresIn: '1h' },
     );
-
     return { token };
   }
 

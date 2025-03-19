@@ -31,39 +31,89 @@ function Item() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
     if (items.length === 0) {
       dispatch(fetchItems());
     }
     dispatch(fetchFinish());
-  
   }, [dispatch, items.length]);
 
   useEffect(() => {
     const fetchData = async (item: any) => {
       try {
-        const response = await fetch(`http://localhost:3000/api/photos/${item.id}`, {
-          method: "GET",
-        });
+        const response = await fetch(
+          `http://localhost:3307/api/photos/${item.id}`,
+          {
+            method: "GET",
+          }
+        );
         const photosJson = await response.json();
         setPhotos([...photosJson]);
       } catch (error) {
         console.error("Wystąpił błąd podczas wysyłania zamówienia:", error);
       }
-      
+    };
+    if (item) {
+      fetchData(item);
     }
-    if(item){
-      fetchData(item)
-    }
-  },[item])
+  }, [item]);
   if (!item) {
     return <div>Nie znaleziono produktu</div>;
   }
 
+  const validateData = () => {
+    let isValid = true;
+    if (!selectedFinish || selectedFinish.trim() === "") {
+      toast.error("Wybierz rodzaj wykończenia", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      isValid = false;
+    }
+    if (!quantity || quantity < 1 ) {
+      toast.error("Ilość musi być większa lub równa 1", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      isValid = false;
+    }
 
+    if (quantity > 1000) {
+      toast.error("Ilość nie może być większa niż 1000", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      isValid = false;
+    }
+    
+    return isValid;
+  };
 
   const handleAddToCart = () => {
+    if (!validateData()) {
+      return;
+    }
     dispatch(
       addToCart({
         ...item,
@@ -73,17 +123,16 @@ function Item() {
     );
     toast.success("Dodano do koszyka", {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 500,
       hideProgressBar: false,
       closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
+      pauseOnHover: false,
+      draggable: false,
       progress: undefined,
       theme: "light",
       transition: Bounce,
     });
   };
-
   return (
     <Container className="py-4">
       <Button onClick={() => navigate(-1)}>Wróć</Button>
@@ -92,16 +141,16 @@ function Item() {
           <Card className={`${style.productCard} my-3`}>
             <Row className="g-0">
               <Col md={6}>
-              {photos.map((photo:any) => {
-                     return <Card.Img
+                {photos.map((photo: any) => {
+                  return (
+                    <Card.Img
                       variant="top"
-                      src={"http://localhost:3000/" + photo.path}
+                      src={"http://localhost:3307/" + photo.path}
                       alt={photo.title}
                       className={style.productImage}
                     />
-              })
-          
-              }
+                  );
+                })}
               </Col>
               <Col md={6}>
                 <Card.Body>
