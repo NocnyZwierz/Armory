@@ -46,6 +46,7 @@ const EditItem = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const token = localStorage.getItem("adminToken");
 
     if (!price.trim()) {
       toast.error("Pole ceny nie może być puste", {
@@ -107,7 +108,7 @@ const EditItem = () => {
       });
       return;
     }
-    
+
     if (!selectedCategory) {
       toast.error("Pole kategorie nie może być puste", {
         position: "top-center",
@@ -140,6 +141,7 @@ const EditItem = () => {
       const response = await fetch(`/api/products/${id}`, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         method: "PATCH",
         body: JSON.stringify(product),
@@ -166,12 +168,12 @@ const EditItem = () => {
   };
 
   return (
-    <div className={style.addItemContainer}>
+    <div className={style.editItemContainer}>
       <h1>Edytuj produkt</h1>
       {filteredItems.length > 0 ? (
-        <img src={"http://localhost:3000/" + filteredItems[0].img} alt="" />
+        <img src={"/" + filteredItems[0].img} alt="" />
       ) : (
-        <p>brak obrazka</p>
+        <p>Brak obrazka</p>
       )}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formTitle">
@@ -181,6 +183,7 @@ const EditItem = () => {
             placeholder="Wprowadź tytuł produktu"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            className="form-control"
           />
         </Form.Group>
 
@@ -191,6 +194,7 @@ const EditItem = () => {
             placeholder="Wprowadź cenę produktu"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            className="form-control"
           />
         </Form.Group>
 
@@ -200,6 +204,7 @@ const EditItem = () => {
             as="select"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
+            className="form-control"
           >
             <option value="">Wybierz kategorię</option>
             {category.map((cat) => (
@@ -216,6 +221,7 @@ const EditItem = () => {
             label="Nowość"
             checked={newProduct}
             onChange={(e) => setNewProduct(e.target.checked)}
+            className="form-check-input"
           />
         </Form.Group>
 
@@ -225,6 +231,7 @@ const EditItem = () => {
             label="Wyróżniony"
             checked={featured}
             onChange={(e) => setFeatured(e.target.checked)}
+            className="form-check-input"
           />
         </Form.Group>
 
@@ -236,13 +243,21 @@ const EditItem = () => {
             placeholder="Wprowadź opis produktu"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            className="form-control"
           />
         </Form.Group>
 
         <Button variant="primary" type="submit" className={style.submitButton}>
           Uaktualnij produkt
         </Button>
-        <ToastContainer/>
+        <Button
+          variant="secondary"
+          onClick={() => navigate(-1)}
+          className={style.submitButton}
+        >
+          Wróć
+        </Button>
+        <ToastContainer />
       </Form>
     </div>
   );

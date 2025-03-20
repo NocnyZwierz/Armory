@@ -20,10 +20,14 @@ import { AuthGuard } from 'src/guard/admin.guard';
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
-
   @Post()
   @UseGuards(new AuthGuard())
-  @UseInterceptors(FilesInterceptor('files', 10, { storage }))
+  @UseInterceptors(
+    FilesInterceptor('files', 5, {
+      storage,
+      limits: { fileSize: 5 * 1024 * 1024 },
+    }),
+  )
   async uploadMultipleFiles(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body('productId') productId: string,

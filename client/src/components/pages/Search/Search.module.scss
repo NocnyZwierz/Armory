@@ -1,0 +1,136 @@
+.searchContainer {
+    background-color: #1C1C1C;
+    color: #E5D3B3;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  h1 {
+    color: #D4AF37;
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+  
+  .spinner {
+    margin-top: 20px;
+    color: #D4AF37;
+  }
+  
+  p {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .mainElement {
+    background-color: #2A2A2A;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(212, 175, 55, 0.3);
+    margin-bottom: 20px;
+    transition: transform 0.2s ease-in-out;
+    text-align: center;
+  
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 0px 15px rgba(212, 175, 55, 0.5);
+    }
+  
+    h2 {
+      color: #D4AF37;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+  
+    p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  
+    img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 3px solid #D4AF37;
+      margin-bottom: 10px;
+    }
+  
+    a {
+      display: block;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #D4AF37;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.2s ease-in-out;
+  
+      &:hover {
+        color: #E5D3B3;
+      }
+    }
+  
+    button {
+      background-color: #D4AF37;
+      color: #1C1C1C;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+  
+      &:hover {
+        background-color: #B08E2E;
+      }
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .searchContainer {
+      max-width: 90%;
+    }
+  
+    .mainElement {
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .mainElement {
+      width: 100%;
+    }
+  
+    img {
+      width: 120px;
+      height: 120px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .searchContainer {
+      padding: 20px;
+    }
+  
+    h1 {
+      font-size: 22px;
+    }
+  
+    .mainElement {
+      padding: 10px;
+    }
+  
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+  

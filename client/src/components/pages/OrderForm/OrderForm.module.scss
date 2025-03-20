@@ -1,0 +1,115 @@
+.orderFormContainer {
+    background-color: #1C1C1C;
+    color: #E5D3B3;
+    padding: 40px;
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(212, 175, 55, 0.3);
+  }
+  
+  .title {
+    color: #D4AF37;
+    margin-bottom: 20px;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  label {
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: left;
+  }
+  
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #B0B0B0;
+    background-color: #4A4A4A;
+    color: #E5D3B3;
+    transition: border 0.3s ease-in-out;
+  
+    &:focus {
+      border-color: #D4AF37;
+      outline: none;
+      background-color: #353535;
+    }
+  }
+  
+  .submitButton {
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1C1C1C;
+    background-color: #D4AF37;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  
+    &:hover {
+      background-color: #B08E2E;
+      transform: scale(1.05);
+    }
+  
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  .cartSummary {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .cartItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #D4AF37;
+  }
+  
+  .cartItem img {
+    width: 80px;
+    border-radius: 5px;
+    border: 2px solid #D4AF37;
+  }
+  
+  @media (max-width: 768px) {
+    .orderFormContainer {
+      padding: 30px;
+      max-width: 100%;
+    }
+  
+    label {
+      font-size: 16px;
+    }
+  
+    .submitButton {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .orderFormContainer {
+      padding: 20px;
+    }
+  
+    .cartItem img {
+      width: 60px;
+    }
+  }
+  

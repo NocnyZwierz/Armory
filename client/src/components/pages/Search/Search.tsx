@@ -64,45 +64,33 @@ const Search = () => {
 
   return (
     <div className={style.searchContainer}>
-      <h1>Wyniki dla: {query}</h1>
-      {loading && <Spinner />}
+      <h1>Wyniki wyszukiwania: "{query}"</h1>
+      {loading && <Spinner animation="border" className={style.spinner} />}
       {error && <p>{error}</p>}
       {!loading && !error && (
         <>
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
-              <Container>
-                <div className={style.mainElement} key={item.id}>
+              <Container key={item.id}>
+                <div className={style.mainElement}>
                   <h2>{item.title}</h2>
                   <p>Cena: {item.price} PLN</p>
-                  <img src={item.img} alt={item.title} />
+                  <img src={`/${item.img}`} alt={item.title} />
                   <div>
                     <Link to={`/item/${item.id}`}>Zobacz szczegóły</Link>
                     <button onClick={() => handleAddToCart(item)}>
                       Dodaj do koszyka
                     </button>
-                    <ToastContainer
-                      position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick={false}
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="light"
-                      transition={Bounce}
-                    />
                   </div>
                 </div>
-                </Container>
+              </Container>
             ))
           ) : (
             <p>Brak wyników</p>
           )}
         </>
       )}
+      <ToastContainer />
     </div>
   );
 };

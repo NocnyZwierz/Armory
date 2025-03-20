@@ -33,34 +33,30 @@ function ItemList(props: { title: string; id: number }) {
   };
 
   return (
-    <div>
+    <div className={style.container}>
       <h1>{props.title}</h1>
-      {filteredItems.map((item) => (
-        <div className={style.mainElement} key={item.id}>
-          <h2>{item.title}</h2>
-          <p>Cena: {item.price}</p>
-          <img src={item.img} alt="" />
-          <div>
-            <Link to={`/item/${item.id}`}>Zobacz szczegóły</Link>
-            <button onClick={() => handleAddToCart(item)}>
-              Dodaj do koszyka
-            </button>
-            <ToastContainer
-              position="top-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-              transition={Bounce}
-            />
+      <div className={style.productGrid}>
+        {filteredItems.map((item) => (
+          <div className={style.mainElement} key={item.id}>
+            <h2>{item.title}</h2>
+            <p>Cena: {item.price} zł</p>
+            <img src={item.img} alt={item.title} />
+            <div className={style.buttons}>
+              <Link to={`/item/${item.id}`} className={style.customLink}>
+                Zobacz szczegóły
+              </Link>
+              <button
+                className={style.customButton}
+                onClick={() => handleAddToCart(item)}
+              >
+                Dodaj do koszyka
+              </button>
+              
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <ToastContainer />
     </div>
   );
 }

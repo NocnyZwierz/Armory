@@ -23,7 +23,7 @@ export const fetchFinish = createAsyncThunk(
     if (!response.ok) {
       throw new Error("Błąd podczas pobierania wykończeń powierzchni");
     }
-    const responsJson = (await response.json()) //do sprawdzenia dlaczego działą po przypisaniu do zmiennej
+    const responsJson = (await response.json())
     return responsJson  as Finish[];
   }
 )

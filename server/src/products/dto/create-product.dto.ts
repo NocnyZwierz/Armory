@@ -5,21 +5,27 @@ import {
   IsNotEmpty,
   IsNumber,
   IsBoolean,
+  Length,
+  Min,
+  Max,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
-
   @IsString()
   @IsNotEmpty()
+  @Length(1, 500)
   title: string;
 
   @Type(() => Number)
   @IsNumber()
+  @Min(1)
+  @Max(100000)
   price: number;
 
   @IsString()
   @IsNotEmpty()
+  @Length(1, 500)
   category: string;
 
   @IsBoolean()
@@ -33,5 +39,6 @@ export class CreateProductDto {
 
   @IsString()
   @IsNotEmpty()
+  @Length(1, 1000)
   description: string;
 }

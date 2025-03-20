@@ -1,0 +1,123 @@
+.footer {
+    background-color: #1C1C1C;
+    color: #E5D3B3;
+    padding: 40px 20px;
+    text-align: center;
+  
+    h2, h3 {
+      color: #D4AF37;
+      margin-bottom: 15px;
+    }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    li {
+      margin-bottom: 10px;
+    }
+  
+    a {
+      color: #E5D3B3;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease-in-out;
+  
+      &:hover {
+        color: #D4AF37;
+      }
+    }
+  
+    .newsletter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+  
+      input {
+        padding: 8px;
+        width: 80%;
+        max-width: 250px;
+        border: 1px solid #B0B0B0;
+        background-color: #4A4A4A;
+        color: #E5D3B3;
+        text-align: center;
+        border-radius: 5px;
+        outline: none;
+  
+        &:focus {
+          border-color: #D4AF37;
+        }
+      }
+  
+      button {
+        padding: 8px 15px;
+        background-color: #353535;
+        color: #E5D3B3;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+  
+        &:hover {
+          background-color: #D4AF37;
+          color: #1C1C1C;
+        }
+      }
+    }
+  
+    .social-media {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+  
+      div {
+        cursor: pointer;
+        font-size: 18px;
+        transition: transform 0.3s ease-in-out;
+  
+        &:hover {
+          transform: scale(1.1);
+          color: #D4AF37;
+        }
+      }
+    }
+  
+    .footer-bottom {
+      margin-top: 20px;
+      font-size: 14px;
+      border-top: 1px solid #B0B0B0;
+      padding-top: 15px;
+      color: #B0B0B0;
+    }
+  
+    @media (max-width: 1024px) {
+      .newsletter input {
+        width: 100%;
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .footer {
+        text-align: left;
+      }
+  
+      .social-media {
+        justify-content: flex-start;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      .footer {
+        text-align: center;
+      }
+  
+      .social-media {
+        justify-content: center;
+      }
+    }
+  }
+  

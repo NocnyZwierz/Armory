@@ -1,0 +1,110 @@
+.contactContainer {
+    background-color: #1C1C1C;
+    color: #E5D3B3;
+    padding: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(212, 175, 55, 0.3);
+    text-align: center;
+    margin-bottom: 50px;
+  
+    h1 {
+      color: #D4AF37;
+      margin-bottom: 20px;
+    }
+  }
+  
+  .formRow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .firstColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  input {
+    background-color: #4A4A4A;
+    border: 1px solid #B0B0B0;
+    color: #E5D3B3;
+    padding: 10px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 5px;
+    transition: border 0.3s ease-in-out;
+  
+    &:focus {
+      border-color: #D4AF37;
+      outline: none;
+      background-color: #353535;
+      box-shadow: 0px 0px 8px rgba(212, 175, 55, 0.5);
+    }
+  }
+  
+  .checkboxContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #D4AF37;
+  }
+
+  .MassageInput{
+    height: 225px;
+  }
+  
+
+  .submitButton {
+    background-color: #D4AF37;
+    color: #1C1C1C;
+    font-weight: bold;
+    padding: 12px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 50px;
+  
+    &:hover {
+      background-color: #B08E2E;
+      transform: scale(1.05);
+    }
+  
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .contactContainer {
+      padding: 30px;
+    }
+  
+    input {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contactContainer {
+      padding: 20px;
+    }
+  
+    .formRow {
+      flex-direction: column;
+    }
+  }
+  

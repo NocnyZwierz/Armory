@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import style from './AdminLogin.module.scss'
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
@@ -95,7 +96,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
+    <div className={style.adminLoginContainer}>
       <h2>Logowanie do panelu admina</h2>
       <Form onSubmit={handleLogin}>
         <Form.Group controlId="formUsername">
@@ -116,7 +117,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" className="mt-3">
+        <Button type="submit" className={style.submitButton}>
           Zaloguj się
         </Button>
       </Form>

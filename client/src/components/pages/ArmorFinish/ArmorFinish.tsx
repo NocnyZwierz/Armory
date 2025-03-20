@@ -1,44 +1,52 @@
 import React from "react";
 import style from "./ArmorFinish.module.scss";
+import MirrorPolish from "../../../assets/Finish/MirrorPolish.jpg";
+import BlackenedSteel from "../../../assets/Finish/BlackenedSteel.jpg";
+import SatinFinish from "../../../assets/Finish/SatinFinish.jpg";
+import BrushedFinish from "../../../assets/Finish/BrushedFinish.jpg"
+import Rustic from "../../../assets/Finish/Rustic.jpg"
 
 const finishes = [
   {
-    name: "Mirror Polish",
+    name: "Polerowanie na lustro",
     description:
-      "A highly reflective finish achieved through extensive polishing. Offers aesthetic appeal but requires maintenance to prevent tarnishing.",
-    image: "/images/mirror-polish.jpg",
+      "Bardzo refleksyjne wykończenie uzyskane poprzez intensywne polerowanie. Zapewnia estetyczny wygląd, ale wymaga konserwacji, aby zapobiec matowieniu.",
+    image: MirrorPolish,
   },
   {
-    name: "Satin Finish",
+    name: "Wykończenie satynowe",
     description:
-      "A smooth but non-reflective finish that reduces glare. Achieved by sanding or using abrasives, offering a balance between aesthetics and practicality.",
-    image: "/images/satin-finish.jpg",
+      "Gładkie, ale nieodblaskowe wykończenie redukujące odblaski. Uzyskiwane poprzez szlifowanie lub stosowanie materiałów ściernych, oferując równowagę między estetyką a praktycznością.",
+    image: SatinFinish,
   },
   {
-    name: "Blackened Steel",
+    name: "Stal czerniona",
     description:
-      "A darkened finish achieved through chemical treatments or heat. Provides a unique appearance and some level of rust resistance.",
-    image: "/images/blackened-steel.jpg",
+      "Przyciemnione wykończenie uzyskane poprzez obróbkę chemiczną lub termiczną. Zapewnia unikalny wygląd i pewien poziom odporności na rdzę.",
+    image: BlackenedSteel,
   },
   {
-    name: "Brushed Finish",
+    name: "Wykończenie szczotkowane",
     description:
-      "A textured finish with visible linear brush marks. Commonly used to reduce reflections and hide small scratches.",
-    image: "/images/brushed-finish.jpg",
+      "Teksturowane wykończenie z widocznymi liniowymi śladami szczotkowania. Powszechnie stosowane w celu redukcji odbić i maskowania drobnych rys.",
+    image: BrushedFinish,
   },
   {
-    name: "Rustic / Aged Finish",
+    name: "Wykończenie rustykalne / postarzane",
     description:
-      "A deliberately aged or oxidized look that mimics historical patina. Often used for historical reenactments or decorative purposes.",
-    image: "/images/rustic-finish.jpg",
+      "Celowo postarzony lub utleniony wygląd, który naśladuje historyczną patynę. Często stosowane w rekonstrukcjach historycznych lub celach dekoracyjnych.",
+    image: Rustic,
   },
 ];
 
 const ArmorFinish = () => {
   return (
     <div className={style.container}>
-        <h3>Wszystkie elementy domyślnie są wykończone na "lustro"</h3>
-        <p>Przy zamawianiu jeśli ma być inne wykończenie proszę wybrać odpowiednie wykończenie przy zamawianiu produktu.</p>
+      <h3>Wszystkie elementy domyślnie są wykończone na "lustro"</h3>
+      <p>
+        Przy składaniu zamówienia, jeśli chcesz inne wykończenie, wybierz
+        odpowiednią opcję podczas zamawiania produktu.
+      </p>
       {finishes.map((finish, index) => (
         <div key={index} className={style.finish}>
           <h2>{finish.name}</h2>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styles from "./OrderForm.module.scss";
-import { Col, Container, Form, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -181,77 +180,38 @@ const OrderForm = () => {
   return (
     <div className={styles.orderFormContainer}>
       <h2 className={styles.title}>Formularz Zamówienia</h2>
-      <Container className="py-4">
-        <h1>Koszyk</h1>
-        {cartItems.map((item) => (
-          <div key={item.id}>
-            <Row className="align-items-center mb-3">
-              <Col>
-                <div>
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    style={{ width: "100px" }}
-                  />
-                </div>
-              </Col>
-              <Col>
-                <h3>{item.title}</h3>
-                <Form.Group
-                  controlId={`finishSelect-${item.id}`}
-                  className="mt-3"
-                >
-                  <Form.Label>Rodzaj wykończenia</Form.Label>
-                </Form.Group>
-              </Col>
-              <Col>
-                <p>Ilość: {item.quantity}</p>
-              </Col>
-              <Col>
-                <p>Cena: {item.price} PLN</p>
-              </Col>
-            </Row>
-          </div>
-        ))}
-        <h3>Podsumowanie</h3>
-        <p>Cena całkowita koszyka: {totalPrice} PLN</p>
-      </Container>
+      <div className={styles.cartSummary}>
+        <h3>Twój koszyk</h3>
+        {cartItems.length === 0 ? (
+          <p>Koszyk jest pusty.</p>
+        ) : (
+          cartItems.map((item) => (
+            <div key={item.id} className={styles.cartItem}>
+              <img src={item.img} alt={item.title} />
+              <p>{item.title}</p>
+              <p>{item.quantity}x</p>
+              <p>{item.price} PLN</p>
+            </div>
+          ))
+        )}
+        <h3>Łączna cena: {totalPrice} PLN</h3>
+      </div>
       <form onSubmit={handleSubmit} className={styles.form}>
         <label>
           Imię:
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
+          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
         </label>
         <label>
           Nazwisko:
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
+          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
         </label>
         <label>
           Adres dostawy:
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-          />
+          <input type="text" name="address" value={formData.address} onChange={handleChange} />
         </label>
         <label>
           Email:
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} />
         </label>
         <button type="submit" className={styles.submitButton}>
           Zamów

@@ -26,7 +26,7 @@ interface Order {
   }[];
 }
 
-const AdminPanel = (props:any) => {
+const AdminPanel = (props: any) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -45,47 +45,47 @@ const AdminPanel = (props:any) => {
     }
   }, []);
 
-
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    fetch("/api/products")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Błąd podczas pobierania produktów");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProducts(data);
-        setLoadingProducts(false);
-      })
-      .catch((error) => {
-        setErrorProducts(error.message);
-        setLoadingProducts(false);
-      });
-      
-    fetch("/api/orders", {
-      method: "GET",
-      headers : {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    if (token) {
+      fetch("/api/products")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Błąd podczas pobierania produktów");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setProducts(data);
+          setLoadingProducts(false);
+        })
+        .catch((error) => {
+          setErrorProducts(error.message);
+          setLoadingProducts(false);
+        });
 
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Błąd podczas pobierania zamówień");
-        }
-        return response.json();
+      fetch("/api/orders", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => {
-        setOrders(data);
-        setLoadingOrders(false);
-      })
-      .catch((error) => {
-        setErrorOrders(error.message);
-        setLoadingOrders(false);
-      });
-  }, []);
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Błąd podczas pobierania zamówień");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setOrders(data);
+          setLoadingOrders(false);
+        })
+        .catch((error) => {
+          setErrorOrders(error.message);
+          setLoadingOrders(false);
+        });
+    }
+  }, [isLogged]);
 
   const handleLogout = async () => {
     try {
@@ -103,8 +103,14 @@ const AdminPanel = (props:any) => {
   };
 
   const handleDelete = (id: string) => {
+    const token = localStorage.getItem("adminToken");
     if (window.confirm("Czy na pewno chcesz usunąć produkt?")) {
-      fetch(`/api/products/${id}`, { method: "DELETE" })
+      fetch(`/api/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error("Błąd podczas usuwania produktu");
@@ -120,10 +126,14 @@ const AdminPanel = (props:any) => {
   };
 
   if (!isLogged) {
-    return <AdminLogin onLoginSuccess={() => {
-      props.setIsAdmin(true)
-      setIsLogged(true)
-    }} />;
+    return (
+      <AdminLogin
+        onLoginSuccess={() => {
+          props.setIsAdmin(true);
+          setIsLogged(true);
+        }}
+      />
+    );
   }
 
   return (
@@ -153,9 +163,13 @@ const AdminPanel = (props:any) => {
                     <h4>{product.title}</h4>
                     <p>{product.price}</p>
                     <p>{product.category}</p>
-                    <Row>
+                    <Row className={style.buttonGroup}>
                       <Col>
-                      <Button onClick={() => navigate(`/edit-item/${product.id}`)}>Edytuj</Button>
+                        <Button
+                          onClick={() => navigate(`/edit-item/${product.id}`)}
+                        >
+                          Edytuj
+                        </Button>
                       </Col>
                       <Col>
                         <Button
@@ -181,42 +195,48 @@ const AdminPanel = (props:any) => {
         ) : errorOrders ? (
           <p>Błąd: {errorOrders}</p>
         ) : (
-          <ul>
+          <div className={style.ordersContainer}>
             {orders.map((order) => (
-              <div>
-                <Row>
-                  <Col>
-                    <p>{order.customerName}</p>
-                  </Col>
-
-                  <Col>
-                    <p>{order.customerSurname}</p>
-                  </Col>
-
-                  <Col>
-                    <p>{order.deliveryAddress}</p>
-                  </Col>
-
-                  <Col>
-                    <p>{order.customerEmail}</p>
-                  </Col>
-
-                  <Col>
-                    <p>{order.id}</p>
-                  </Col>
-                  <div className={style.orderItems}>
-                    {order.items.map((item, index) => (
-                      <div key={index}>
-                        <p>Product ID: {item.title}</p>
-                        <p>Price: {item.price}</p>
-                        <p>Quantity: {item.quantity}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Row>
+              <div key={order.id} className={style.orderCard}>
+                <div className={style.orderHeader}>
+                  <p>
+                    <strong>ID zamówienia:</strong> {order.id}
+                  </p>
+                  <p>
+                    <strong>Klient:</strong> {order.customerName}{" "}
+                    {order.customerSurname}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {order.customerEmail}
+                  </p>
+                  <p>
+                    <strong>Adres dostawy:</strong> {order.deliveryAddress}
+                  </p>
+                </div>
+                <div className={style.orderItems}>
+                  <h4>Produkty:</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Nazwa</th>
+                        <th>Cena</th>
+                        <th>Ilość</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {order.items.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.title}</td>
+                          <td>{item.price} zł</td>
+                          <td>{item.quantity}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </div>

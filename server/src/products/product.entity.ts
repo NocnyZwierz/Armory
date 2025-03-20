@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Length, Max, Min } from 'class-validator';
 import { Photo } from 'src/photos/photo.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -10,14 +10,18 @@ export class Product {
 
   @IsNotEmpty()
   @Column()
+  @Length(1, 500)
   title: string;
 
   @IsNotEmpty()
   @Column('decimal', { precision: 10, scale: 2 })
+  @Min(1)
+  @Max(100000)
   price: number;
 
   @IsNotEmpty()
   @Column()
+  @Length(1, 500)
   category: string;
 
   @IsNotEmpty()
@@ -30,10 +34,12 @@ export class Product {
 
   @IsNotEmpty()
   @Column()
+  @Length(1, 500)
   img: string;
 
   @IsNotEmpty()
   @Column({ type: 'text' })
+  @Length(1, 1000)
   description: string;
   
   @IsNotEmpty()

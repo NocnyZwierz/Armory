@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form, Carousel } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
@@ -9,16 +9,6 @@ import { addToCart } from "../../../redux/slice/cartSlice";
 import { fetchItems } from "../../../redux/slice/itemList";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
-interface Items {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  new: boolean;
-  featured: boolean;
-  img: string;
-  description: string;
-}
 
 function Item() {
   const { id } = useParams();
@@ -42,7 +32,7 @@ function Item() {
     const fetchData = async (item: any) => {
       try {
         const response = await fetch(
-          `http://localhost:3307/api/photos/${item.id}`,
+          `/api/photos/${item.id}`,
           {
             method: "GET",
           }
@@ -57,6 +47,7 @@ function Item() {
       fetchData(item);
     }
   }, [item]);
+
   if (!item) {
     return <div>Nie znaleziono produktu</div>;
   }
@@ -77,7 +68,7 @@ function Item() {
       });
       isValid = false;
     }
-    if (!quantity || quantity < 1 ) {
+    if (!quantity || quantity < 1) {
       toast.error("Ilość musi być większa lub równa 1", {
         position: "top-center",
         autoClose: 1000,
@@ -106,7 +97,7 @@ function Item() {
       });
       isValid = false;
     }
-    
+
     return isValid;
   };
 
@@ -133,33 +124,51 @@ function Item() {
       transition: Bounce,
     });
   };
+
   return (
-    <Container className="py-4">
-      <Button onClick={() => navigate(-1)}>Wróć</Button>
+    <Container className={style.productContainer}>
+      <Button onClick={() => navigate(-1)} className={style.backButton}>
+        Wróć
+      </Button>
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <Card className={`${style.productCard} my-3`}>
             <Row className="g-0">
               <Col md={6}>
-                {photos.map((photo: any) => {
-                  return (
-                    <Card.Img
-                      variant="top"
-                      src={"http://localhost:3307/" + photo.path}
-                      alt={photo.title}
-                      className={style.productImage}
-                    />
-                  );
-                })}
+                {photos.length > 0 ? (
+                  <Carousel>
+                    {photos.map((photo: any, index: number) => (
+                      <Carousel.Item key={index}>
+                        <img
+                          className={`d-block w-100 ${style.productImage}`}
+                          src={`/${photo.path}`}
+                          alt={photo.title}
+                        />
+                      </Carousel.Item>
+                    ))}
+                  </Carousel>
+                ) : (
+                  <Card.Img
+                    variant="top"
+                    src={"/" + item.img}
+                    alt={item.title}
+                    className={style.productImage}
+                  />
+                )}
               </Col>
               <Col md={6}>
                 <Card.Body>
-                  <Card.Title>{item.title}</Card.Title>
+                  <Card.Title className={style.title}>{item.title}</Card.Title>
                   <Card.Text className={style.description}>
                     {item.description}
                   </Card.Text>
-                  <Form.Group controlId="finishSelect" className="mt-3">
-                    <Form.Label>Rodzaj wykończenia</Form.Label>
+                  <Form.Group
+                    controlId="finishSelect"
+                    className={`mt-3 ${style.formGroup}`}
+                  >
+                    <Form.Label className={style.description}>
+                      Rodzaj wykończenia
+                    </Form.Label>
                     <Form.Select
                       value={selectedFinish}
                       onChange={(e) => setSelectedFinish(e.target.value)}
@@ -171,7 +180,10 @@ function Item() {
                       ))}
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group controlId="quantitySelect" className="mt-3">
+                  <Form.Group
+                    controlId="quantitySelect"
+                    className={`mt-3 ${style.formGroup}`}
+                  >
                     <Form.Label>Ilość</Form.Label>
                     <Form.Control
                       type="number"
@@ -181,23 +193,14 @@ function Item() {
                     />
                   </Form.Group>
                   <div className="d-flex align-items-center justify-content-between mt-auto">
-                    <span className={style.price}>Cena: {item.price}</span>
-                    <Button variant="primary" onClick={handleAddToCart}>
+                    <span className={style.price}>Cena: {item.price} zł</span>
+                    <Button
+                      className={style.customButton}
+                      onClick={handleAddToCart}
+                    >
                       Dodaj do koszyka
                     </Button>
-                    <ToastContainer
-                      position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick={false}
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="light"
-                      transition={Bounce}
-                    />
+                    <ToastContainer />
                   </div>
                 </Card.Body>
               </Col>

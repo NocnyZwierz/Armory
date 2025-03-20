@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { RootState } from "../../../redux/store";
-import { Button, Form } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import style from "./AddItem.module.scss";
 import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -20,6 +20,8 @@ const AddItem = () => {
   const [img, setImg] = useState("");
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState<FileList | null>(null);
+  const MAX_FILES = 5;
+  const MAX_FILE_SIZE = 5 * 1024 * 1024
 
   useEffect(() => {
     dispatch(fetchCategory());
@@ -27,13 +29,50 @@ const AddItem = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFiles(e.target.files);
+      const selectedFiles = Array.from(e.target.files);
+
+      if (selectedFiles.length > MAX_FILES) {
+        toast.error(`Możesz dodać maksymalnie ${MAX_FILES} zdjęć!`, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+  
+      const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE);
+  
+      if (oversizedFiles.length > 0) {
+        toast.error(`Niektóre pliki są za duże! Maksymalny rozmiar to 5MB.`, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+  
+      const validFiles = selectedFiles.filter(file => file.size <= MAX_FILE_SIZE);
+  
+      if (validFiles.length > 0) {
+        setFiles(validFiles as unknown as FileList);
+      }
     }
-  };
+  };;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const token = localStorage.getItem("adminToken");
     if (!title.trim()) {
       toast.error("Pole tytułu nie może być puste!", {
         position: "top-center",
@@ -123,7 +162,10 @@ const AddItem = () => {
     try {
       const response = await fetch("/api/products", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(product),
       });
 
@@ -143,6 +185,9 @@ const AddItem = () => {
 
         const photosResponse = await fetch("/api/photos", {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         });
 
@@ -154,7 +199,10 @@ const AddItem = () => {
         const body = { img: responsFoto[0].path };
 
         const updateImg = await fetch(`/api/products/${productId}`, {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           method: "PATCH",
           body: JSON.stringify(body),
         });
@@ -193,6 +241,8 @@ const AddItem = () => {
       });
     }
   };
+
+  
 
   return (
     <div className={style.addItemContainer}>
@@ -233,25 +283,28 @@ const AddItem = () => {
             ))}
           </Form.Control>
         </Form.Group>
-
-        <Form.Group controlId="formNewProduct">
-          <Form.Check
-            type="checkbox"
-            label="Nowość"
-            checked={newProduct}
-            onChange={(e) => setNewProduct(e.target.checked)}
-          />
-        </Form.Group>
-
-        <Form.Group controlId="formFeatured">
-          <Form.Check
-            type="checkbox"
-            label="Wyróżniony"
-            checked={featured}
-            onChange={(e) => setFeatured(e.target.checked)}
-          />
-        </Form.Group>
-
+        <Row>
+          <Col>
+            <Form.Group controlId="formNewProduct">
+              <Form.Check
+                type="checkbox"
+                label="Nowość"
+                checked={newProduct}
+                onChange={(e) => setNewProduct(e.target.checked)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="formFeatured">
+              <Form.Check
+                type="checkbox"
+                label="Wyróżniony"
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
         <Form.Group controlId="formDescription">
           <Form.Label>Opis</Form.Label>
           <Form.Control
@@ -270,6 +323,13 @@ const AddItem = () => {
 
         <Button variant="primary" type="submit" className={style.submitButton}>
           Dodaj produkt
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() => navigate(-1)}
+          className={style.submitButton}
+        >
+          Wróć
         </Button>
         <ToastContainer />
       </Form>

@@ -8,7 +8,7 @@ import style from "./App.module.scss";
 import Footer from "./components/views/Footer/Footer";
 import About from "./components/pages/About/About";
 import Shop from "./components/pages/Shop/Shop";
-import Gallery from "./components/pages/Galllery/Gallery";
+import Gallery from "./components/pages/Gallery/Gallery";
 import Terms from "./components/pages/Terms/Terms";
 import Contact from "./components/pages/Contact/Contact";
 import Measurements from "./components/pages/Measurements/Measurements";
@@ -38,7 +38,7 @@ function App() {
   
     window.addEventListener("storage", checkAuth);
   
-    checkAuth(); // Sprawdzenie na start
+    checkAuth();
   
     return () => {
       window.removeEventListener("storage", checkAuth);

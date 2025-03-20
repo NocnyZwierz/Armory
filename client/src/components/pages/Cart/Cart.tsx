@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -6,6 +6,7 @@ import { RootState } from "../../../redux/store";
 import { fetchFinish } from "../../../redux/slice/finishesSlice";
 import { removeProduct, updateItemsInCart } from "../../../redux/slice/cartSlice";
 import { useNavigate } from "react-router-dom";
+import style from './Cart.module.scss'
 
 const Cart = () => {
   const dispatch = useAppDispatch();
@@ -65,76 +66,87 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <Container className="py-4">
+      <Container className={style.cartContainer}>
         <h1>Koszyk</h1>
-        <p>Twój koszyk jest pusty.</p>
+        <div className={style.emptyCart}>
+          <p>Twój koszyk jest pusty.</p>
+        </div>
       </Container>
     );
   }
 
   return (
-    <Container className="py-4">
-      <h1>Koszyk</h1>
-      {cartItems.map((item,index) => (
-        <div>
-          <Row className="align-items-center mb-3">
-            <Col>
-              <div>
-                <img src={item.img} alt={item.title} style={{ width: "100px" }} />
-              </div>
-            </Col>
-            <Col>
-              <h3>{item.title}</h3>
-              <Form.Group controlId={`finishSelect-${item.id}`} className="mt-3">
-                <Form.Label>Rodzaj wykończenia</Form.Label>
-                <Form.Select
-                  value={localCartUpdates[index]?.finish || item.finish}
-                  onChange={(e) => handleFinishChange(index, e.target.value)}
-                >
-                  {finish.map((finish) => (
-                    <option key={finish.id} value={finish.title}>
-                      {finish.title}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col>
-              <p>Cena: {item.price} PLN</p>
-            </Col>
-            <Col>
-              <Form.Control
-                type="number"
-                min="1"
-                value={localCartUpdates[index]?.quantity || item.quantity}
-                onChange={(e) =>
-                  handleQuantityChange(index, Number(e.target.value))
-                }
-              />
-            </Col>
-            <Col>
-              <p>
-                Cena całkowita:{" "}
-                {item.price *
-                  (localCartUpdates[index]?.quantity || item.quantity)}{" "}
-                PLN
-              </p>
-            </Col>
-            <Col>
-              <div onClick={() => handleRemove(index)}>
-                {FaRegTrashAlt({})}
-              </div>
-            </Col>
-          </Row>
-        </div>
-      ))}
-      <Button variant="primary" onClick={handleUpdateCart}>
-        Uaktualnij koszyk
+<Container className={style.cartContainer}>
+  <h1>Koszyk</h1>
+  {cartItems.map((item, index) => (
+    <div key={index} className={style.cartItem}>
+      <Row className="align-items-center w-100">
+        <Col xs={3}>
+          <img src={item.img} alt={item.title} />
+        </Col>
+        <Col xs={3} className={style.productDetails}>
+          <h3>{item.title}</h3>
+          <Form.Group controlId={`finishSelect-${item.id}`} className="mt-2">
+            <Form.Label>Rodzaj wykończenia</Form.Label>
+            <Form.Select
+              value={localCartUpdates[index]?.finish || item.finish}
+              onChange={(e) => handleFinishChange(index, e.target.value)}
+            >
+              {finish.map((finish) => (
+                <option key={finish.id} value={finish.title}>
+                  {finish.title}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col xs={2} className={style.price}>
+          <p>Cena: {item.price} PLN</p>
+        </Col>
+        <Col xs={2}>
+          <Form.Control
+            type="number"
+            min="1"
+            className={style.quantityInput}
+            value={localCartUpdates[index]?.quantity || item.quantity}
+            onChange={(e) =>
+              handleQuantityChange(index, Number(e.target.value))
+            }
+          />
+        </Col>
+        <Col xs={2} className={style.price}>
+          <p>
+            Cena całkowita:{" "}
+            {item.price * (localCartUpdates[index]?.quantity || item.quantity)}{" "}
+            PLN
+          </p>
+        </Col>
+        <Col xs={1}>
+          <div
+            className={style.removeButton}
+            onClick={() => handleRemove(index)}
+          >
+            {FaRegTrashAlt({})}
+          </div>
+        </Col>
+      </Row>
+    </div>
+  ))}
+  <Button className={style.updateButton} onClick={handleUpdateCart}>
+    Uaktualnij koszyk
+  </Button>
+
+  <div className={style.cartSummary}>
+    <h3>Podsumowanie</h3>
+    <p className={style.totalPrice}>Cena całkowita koszyka: {totalPrice} PLN</p>
+    <Button
+      className={style.checkoutButton}
+      onClick={() => navigate("/order-form")}
+    >
+      Złóż zamówienie
       </Button>
-      <h3>Podsumowanie</h3>
-      <p>Cena całkowita koszyka: {totalPrice} PLN</p>
-      <button onClick={() => navigate('/order-form')}>Złóż zamówienie</button>
-    </Container>
+  </div>
+</Container>
   );
 };
 

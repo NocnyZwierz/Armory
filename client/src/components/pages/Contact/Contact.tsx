@@ -1,36 +1,32 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
+import style from "./Contact.module.scss";
 
 const Contact = () => {
   return (
-    <div>
+    <div className={style.contactContainer}>
       <h1>Formularz kontaktowy</h1>
-      <Row>
-        <Col>
-          <Row>
-            <input />
-            <input />
-            <input />
-            <input />
-          </Row>
+      <Row className={style.formRow}>
+        <Col className={style.firstColumn}>
+          <input type="text" placeholder="Imię" />
+          <input type="email" placeholder="E-mail" />
+          <input type="tel" placeholder="Telefon" />
+          <input type="text" placeholder="Temat" />
         </Col>
         <Col>
-          <input />
+          <input type="text" placeholder="Treść wiadomości" className={style.MassageInput} />
         </Col>
       </Row>
-      <div>
+      <div className={style.checkboxContainer}>
         <input type="checkbox" />
         <p>
-          Aliquam viverra orci diam, ut convallis est luctus ac. Vestibulum ac
-          lacinia diam. Proin vehicula maximus tellus, non scelerisque turpis
-          elementum malesuada. Aliquam sodales sem ac magna congue fringilla.
-          Class aptent taciti sociosqu ad litora torquent per conubia nostra,
-          per inceptos himenaeos. Donec semper arcu non sodales vestibulum.
-          Integer egestas convallis dolor, eu vestibulum risus imperdiet vitae.
-          Donec tempor at nibh eu convallis.
+          Wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z
+          polityką prywatności. Aliquam viverra orci diam, ut convallis est
+          luctus ac. Vestibulum ac lacinia diam. Proin vehicula maximus tellus,
+          non scelerisque turpis elementum malesuada.
         </p>
       </div>
-      <button>Wyślij</button>
+      <button className={style.submitButton}>Wyślij</button>
     </div>
   );
 };

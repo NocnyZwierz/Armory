@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
@@ -9,18 +9,23 @@ export class Order {
 
   @IsNotEmpty()
   @Column()
+  @Length(1, 100)
   customerName: string;
   
   @IsNotEmpty()
   @Column()
+  @Length(1, 100)
   customerSurname: string;
 
   @IsNotEmpty()
   @Column()
+  @Length(1, 500)
   deliveryAddress: string;
 
   @IsNotEmpty()
   @Column()
+  @IsEmail()
+  @Length(1, 100)
   customerEmail: string;
 
   @IsNotEmpty()
